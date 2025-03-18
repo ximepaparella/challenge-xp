@@ -192,8 +192,9 @@ export function useUserList({
     return () => {
       console.log('useUserList.useEffect - Limpiando');
       isMountedRef.current = false;
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
+      const currentTimeout = searchTimeoutRef.current;
+      if (currentTimeout) {
+        clearTimeout(currentTimeout);
       }
       retryStrategy.cleanup();
     };

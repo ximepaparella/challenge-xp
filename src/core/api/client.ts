@@ -1,5 +1,6 @@
 // Core API client with interceptors and centralized error handling
-import { useState, useEffect } from 'react';
+// Removing unused imports
+// import { useState, useEffect } from 'react';
 
 const BASE_URL = 'https://api.github.com';
 const DEFAULT_HEADERS: Record<string, string> = {
@@ -7,19 +8,19 @@ const DEFAULT_HEADERS: Record<string, string> = {
 };
 
 // Request deduplication cache
-interface PendingRequest {
-  promise: Promise<any>;
+interface PendingRequest<T> {
+  promise: Promise<T>;
   controller: AbortController;
   timestamp: number;
   subscribers: number;
 }
 
 // In-memory request cache to prevent duplicate in-flight requests
-const pendingRequests: Record<string, PendingRequest> = {};
+const pendingRequests: Record<string, PendingRequest<unknown>> = {};
 
 // Cache for completed requests
 interface CacheEntry {
-  data: any;
+  data: unknown;
   timestamp: number;
   staleTime: number;
 }
@@ -31,7 +32,7 @@ const MAX_CACHE_SIZE = 100;
 /**
  * Create a cache key from request details
  */
-const createCacheKey = (endpoint: string | undefined, params?: Record<string, any>): string => {
+const createCacheKey = (endpoint: string | undefined, params?: Record<string, unknown>): string => {
   // Handle undefined endpoint
   const safeEndpoint = endpoint || '';
   
@@ -39,7 +40,7 @@ const createCacheKey = (endpoint: string | undefined, params?: Record<string, an
   
   // Convert params to a stable string representation
   const sortedParams = Object.entries(params)
-    .filter(([_, value]) => value !== undefined && value !== null)
+    .filter(([, value]) => value !== undefined && value !== null)
     .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
     .map(([key, value]) => `${key}=${String(value)}`)
     .join('&');
@@ -50,7 +51,7 @@ const createCacheKey = (endpoint: string | undefined, params?: Record<string, an
 /**
  * Add an entry to the response cache with LRU eviction
  */
-const addToCache = (key: string, data: any, staleTime = 60000) => {
+const addToCache = (key: string, data: unknown, staleTime = 60000) => {
   // Evict oldest entry if cache is full
   if (responseCache.size >= MAX_CACHE_SIZE) {
     const oldestKeyIterator = responseCache.keys().next();
@@ -69,17 +70,22 @@ const addToCache = (key: string, data: any, staleTime = 60000) => {
 /**
  * Get cached response if still fresh
  */
-const getCachedResponse = (key: string): any | null => {
+interface CachedResponseResult<T> {
+  data: T;
+  isStale?: boolean;
+}
+
+const getCachedResponse = <T>(key: string): CachedResponseResult<T> | null => {
   const entry = responseCache.get(key);
   if (!entry) return null;
   
   const isFresh = Date.now() - entry.timestamp < entry.staleTime;
   if (isFresh) {
-    return entry.data;
+    return { data: entry.data as T };
   }
   
   // Return stale data but mark as stale
-  return { data: entry.data, isStale: true };
+  return { data: entry.data as T, isStale: true };
 };
 
 /**
@@ -89,8 +95,8 @@ export const apiFetch = async <T>(
   endpoint: string | undefined,
   options: {
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-    params?: Record<string, any>;
-    body?: any;
+    params?: Record<string, unknown>;
+    body?: unknown;
     headers?: Record<string, string>;
     cache?: boolean;
     staleTime?: number;
@@ -140,9 +146,9 @@ export const apiFetch = async <T>(
 
   // Check cache first for GET requests
   if (method === 'GET' && cache) {
-    const cachedResponse = getCachedResponse(cacheKey);
+    const cachedResponse = getCachedResponse<T>(cacheKey);
     if (cachedResponse && !cachedResponse.isStale) {
-      return cachedResponse;
+      return cachedResponse.data;
     }
     
     // We'll still use stale data but continue the request in background
@@ -150,7 +156,7 @@ export const apiFetch = async <T>(
   
   // Deduplicate in-flight requests
   if (method === 'GET' && deduplicate && pendingRequests[cacheKey]) {
-    const pending = pendingRequests[cacheKey];
+    const pending = pendingRequests[cacheKey] as PendingRequest<T>;
     pending.subscribers++;
     
     try {

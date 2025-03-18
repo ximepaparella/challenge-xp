@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 import { User, Repository } from '@/features/users/types';
 import { GithubService } from '@/features/users/api/github.service';
-import { PageHeader, RepositoryList, UserProfile, UserStats } from '@/features/users/components';
+import { PageHeader, UserProfile, UserStats } from '@/features/users/components';
+import { RepositoryList } from '@/features/repositories';
 import { FavoriteButton } from '@/features/favorites';
 import { useFavorites } from '@/features/favorites/hooks';
 import styles from '@/styles/UserDetail.module.css';
@@ -19,8 +20,6 @@ export default function UserDetail({ user, repositories }: UserDetailProps) {
 
   // Update favorite data when viewing a profile, but only once on mount
   useEffect(() => {
-    let isMounted = true;
-
     const updateFavorite = async () => {
       if (user && isFavorite(user.login)) {
         await updateFavoriteData(user.login);
@@ -28,11 +27,8 @@ export default function UserDetail({ user, repositories }: UserDetailProps) {
     };
 
     updateFavorite();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []); // Empty dependency array since we only want to update once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.login]); // Only re-run if the username changes
 
   if (!user) {
     return (
@@ -131,7 +127,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         repositories,
       },
     };
-  } catch (error) {
+  } catch {
     // Manejo silencioso del error
     return {
       props: {

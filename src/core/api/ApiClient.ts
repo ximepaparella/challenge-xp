@@ -1,8 +1,6 @@
-import { useGithubCache } from '../hooks/useGithubCache';
-
 // Tipos para las opciones de solicitud
 export interface RequestOptions {
-  params?: Record<string, any>;
+  params?: Record<string, unknown>;
   headers?: Record<string, string>;
   cache?: boolean;
   signal?: AbortSignal;
@@ -47,7 +45,7 @@ export class ApiClient {
   /**
    * Construye y normaliza la URL para una solicitud
    */
-  private buildUrl(endpoint: string, params?: Record<string, any>): string {
+  private buildUrl(endpoint: string, params?: Record<string, unknown>): string {
     // Asegurar que el endpoint comience con /
     const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
     
@@ -213,7 +211,7 @@ export class ApiClient {
   /**
    * Realiza una solicitud HTTP POST
    */
-  async post<T>(endpoint: string, body?: any, options: RequestOptions = {}): Promise<T> {
+  async post<T>(endpoint: string, body?: unknown, options: RequestOptions = {}): Promise<T> {
     const { params, headers, signal } = options;
     const url = this.buildUrl(endpoint, params);
     
@@ -230,7 +228,7 @@ export class ApiClient {
   /**
    * Realiza una solicitud HTTP PUT
    */
-  async put<T>(endpoint: string, body?: any, options: RequestOptions = {}): Promise<T> {
+  async put<T>(endpoint: string, body?: unknown, options: RequestOptions = {}): Promise<T> {
     const { params, headers, signal } = options;
     const url = this.buildUrl(endpoint, params);
     
@@ -263,7 +261,7 @@ export class ApiClient {
   /**
    * Realiza una solicitud HTTP PATCH
    */
-  async patch<T>(endpoint: string, body?: any, options: RequestOptions = {}): Promise<T> {
+  async patch<T>(endpoint: string, body?: unknown, options: RequestOptions = {}): Promise<T> {
     const { params, headers, signal } = options;
     const url = this.buildUrl(endpoint, params);
     

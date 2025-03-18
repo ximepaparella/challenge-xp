@@ -1,12 +1,12 @@
 import { useCallback, useState } from 'react';
 
-interface PaginationOptions {
+interface PaginationOptions<T> {
   /** Página inicial para comenzar la paginación */
   initialPage?: number;
   /** Número de elementos por página */
   itemsPerPage?: number;
   /** Función para determinar el identificador único de un elemento */
-  getItemId?: (item: any) => string | number;
+  getItemId?: (item: T) => string | number;
 }
 
 interface UsePaginationProps<T> {
@@ -16,7 +16,7 @@ interface UsePaginationProps<T> {
     total?: number;
   }>;
   /** Opciones de configuración para la paginación */
-  options?: PaginationOptions;
+  options?: PaginationOptions<T>;
 }
 
 /**
@@ -30,7 +30,7 @@ export function usePagination<T>({
   const {
     initialPage = 1,
     itemsPerPage = 10,
-    getItemId = (item: any) => item.id // Por defecto, usamos la propiedad id
+    getItemId = (item: T) => (item as { id: string | number }).id // Por defecto, usamos la propiedad id
   } = options;
 
   // Estado para la paginación

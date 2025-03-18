@@ -8,21 +8,20 @@ import {
 } from '@/mockups/api';
 
 // Constantes para cuando no se use apiFetch
-const BASE_URL = 'https://api.github.com';
-const TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN || process.env.REACT_APP_GITHUB_TOKEN || '';
+// const BASE_URL = 'https://api.github.com';
 
 // Helper para headers cuando no se use apiFetch
-const getHeaders = (): Record<string, string> => {
-  if (TOKEN) {
-    return {
-      Authorization: `token ${TOKEN}`,
-      'Content-Type': 'application/json',
-    };
-  }
-  return {
-    'Content-Type': 'application/json',
-  };
-};
+// const getHeaders = (): Record<string, string> => {
+//   if (TOKEN) {
+//     return {
+//       Authorization: `token ${TOKEN}`,
+//       'Content-Type': 'application/json',
+//     };
+//   }
+//   return {
+//     'Content-Type': 'application/json',
+//   };
+// };
 
 /**
  * Service for GitHub API operations with fallback to mock data when rate limited
@@ -39,6 +38,7 @@ export const GithubService = {
       }
       return user;
     } catch (error) {
+      console.error(`Error fetching user ${username}:`, error);
       const mockUser = await getMockGithubUser(username);
       if (mockUser) {
         return mockUser;
@@ -54,6 +54,7 @@ export const GithubService = {
     try {
       return await apiFetch<Repository[]>(`users/${username}/repos?page=${page}&per_page=${perPage}&sort=updated`);
     } catch (error) {
+      console.error(`Error fetching repositories for user ${username}:`, error);
       return getMockGithubUserRepositories(username, page, perPage);
     }
   },
@@ -65,6 +66,7 @@ export const GithubService = {
     try {
       return await apiFetch<User[]>(`users?since=${since}&per_page=${perPage}`);
     } catch (error) {
+      console.error('Error fetching users:', error);
       return getMockGithubUsers();
     }
   },
@@ -92,6 +94,7 @@ export const GithubService = {
         `search/users?q=${encodeURIComponent(query)}&page=${page}&per_page=${perPage}`
       );
     } catch (error) {
+      console.error(`Error searching users with query "${query}":`, error);
       return searchMockGithubUsers(query);
     }
   }

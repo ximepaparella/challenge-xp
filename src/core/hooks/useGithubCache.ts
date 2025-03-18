@@ -12,7 +12,7 @@ interface CacheItem<T> {
 }
 
 interface CacheState {
-  [key: string]: CacheItem<any>;
+  [key: string]: CacheItem<unknown>;
 }
 
 /**
@@ -83,7 +83,7 @@ export function useGithubCache(expirationTime = DEFAULT_CACHE_DURATION) { // Vue
     }
     
     console.log(`useGithubCache.getCachedData - Usando caché para: ${key}`);
-    return cachedItem.data;
+    return cachedItem.data as T;
   }, [cache, expirationTime]);
 
   /**

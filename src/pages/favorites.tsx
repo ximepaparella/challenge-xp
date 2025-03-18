@@ -5,7 +5,7 @@ import { useFavorites } from '@/features/favorites/hooks';
 import SearchBar from '@/core/components/SearchBar';
 import UserGrid from '@/features/users/components/UserGrid';
 import styles from '@/styles/Home.module.css';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 // Componente de presentación
 interface FavoritesViewProps {

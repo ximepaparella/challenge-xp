@@ -60,7 +60,7 @@ export function useRetryStrategy({
     const now = Date.now();
     const newErrorCount = retryState.errorCount + 1;
     
-    setRetryState(prev => ({
+    setRetryState(() => ({
       errorCount: newErrorCount,
       lastErrorTimestamp: now,
       error,

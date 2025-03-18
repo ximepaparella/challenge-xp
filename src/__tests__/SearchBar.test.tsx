@@ -1,4 +1,5 @@
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { SearchBar } from '@/core/components';
 
 // Mock the debounce hook to avoid waiting in tests

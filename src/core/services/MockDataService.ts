@@ -42,29 +42,14 @@ export class MockDataService {
       full_name: `${owner}/${name}`,
       owner: {
         login: owner,
-        avatar_url: `https://avatars.githubusercontent.com/u/${1000 + id}?v=4`
+        avatar_url: `https://avatars.githubusercontent.com/u/${1000 + id}?v=4`,
+        html_url: `https://github.com/${owner}`
       },
       html_url: `https://github.com/${owner}/${name}`,
       description: `This is a mock repository ${id}`,
-      fork: false,
-      url: `https://api.github.com/repos/${owner}/${name}`,
-      created_at: new Date(Date.now() - Math.random() * 10000000000).toISOString(),
-      updated_at: new Date(Date.now() - Math.random() * 1000000000).toISOString(),
-      pushed_at: new Date(Date.now() - Math.random() * 100000000).toISOString(),
-      homepage: Math.random() > 0.7 ? `https://${owner}.github.io/${name}` : null,
-      size: Math.floor(Math.random() * 10000),
-      stargazers_count: Math.floor(Math.random() * 1000),
-      watchers_count: Math.floor(Math.random() * 100),
       language: ['JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'Rust', 'Go'][Math.floor(Math.random() * 7)],
-      forks_count: Math.floor(Math.random() * 500),
-      open_issues_count: Math.floor(Math.random() * 50),
-      license: Math.random() > 0.3 ? {
-        key: 'mit',
-        name: 'MIT License',
-        url: 'https://api.github.com/licenses/mit'
-      } : null,
-      topics: ['mock', 'data', 'test', 'github-api'].filter(() => Math.random() > 0.5),
-      visibility: 'public'
+      stargazers_count: Math.floor(Math.random() * 1000),
+      forks_count: Math.floor(Math.random() * 500)
     };
   }
 

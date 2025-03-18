@@ -17,10 +17,10 @@ export class GithubService {
       const user = await this.apiClient.get<User>(`/users/${username}`);
       console.log(`GithubService.getUser - Usuario obtenido: ${user.login}`);
       return user;
-    } catch (error) {
-      console.error(`GithubService.getUser - Error obteniendo usuario: ${username}`, error);
+    } catch (err) {
+      console.error(`GithubService.getUser - Error obteniendo usuario: ${username}`, err);
       if (process.env.NODE_ENV !== 'production') {
-        console.warn(`GitHub API error: ${error instanceof Error ? error.message : String(error)}`);
+        console.warn(`GitHub API error: ${err instanceof Error ? err.message : String(err)}`);
         console.log('Falling back to mock data...');
       }
       return MockDataService.getMockUser(username);
@@ -36,9 +36,9 @@ export class GithubService {
         `/users/${username}/repos`,
         { params: { page, per_page: perPage, sort: 'updated' } }
       );
-    } catch (error) {
+    } catch (err) {
       if (process.env.NODE_ENV !== 'production') {
-        console.warn(`GitHub API error: ${error instanceof Error ? error.message : String(error)}`);
+        console.warn(`GitHub API error: ${err instanceof Error ? err.message : String(err)}`);
         console.log('Falling back to mock data...');
       }
       return MockDataService.getMockUserRepos(username, page, perPage);
@@ -57,10 +57,10 @@ export class GithubService {
       );
       console.log(`GithubService.getUsers - Usuarios obtenidos: ${users.length}`);
       return users;
-    } catch (error) {
-      console.error('GithubService.getUsers - Error obteniendo usuarios:', error);
+    } catch (err) {
+      console.error('GithubService.getUsers - Error obteniendo usuarios:', err);
       if (process.env.NODE_ENV !== 'production') {
-        console.warn(`GitHub API error: ${error instanceof Error ? error.message : String(error)}`);
+        console.warn(`GitHub API error: ${err instanceof Error ? err.message : String(err)}`);
         console.log('Falling back to mock data...');
       }
       return MockDataService.getMockUsers(since, perPage);
@@ -91,8 +91,8 @@ export class GithubService {
           total_count: 1000, // Un número grande para simular el total
           incomplete_results: false
         };
-      } catch (error) {
-        console.error('GithubService.searchUsers - Error obteniendo usuarios regulares:', error);
+      } catch (err) {
+        console.error('GithubService.searchUsers - Error obteniendo usuarios regulares:', err);
         return MockDataService.getMockSearchResults('', page, perPage);
       }
     }
@@ -107,12 +107,12 @@ export class GithubService {
       );
       console.log(`GithubService.searchUsers - Resultados de búsqueda obtenidos: ${result.items.length} de ${result.total_count}`);
       return result;
-    } catch (error) {
-      console.error('GithubService.searchUsers - Error buscando usuarios:', error);
+    } catch (err) {
+      console.error('GithubService.searchUsers - Error buscando usuarios:', err);
       
       // Verificar si es un error de límite de tasa
-      const isRateLimitError = error instanceof Error && 
-        error.message.includes('rate limit');
+      const isRateLimitError = err instanceof Error && 
+        err.message.includes('rate limit');
       
       if (process.env.NODE_ENV !== 'production') {
         if (isRateLimitError) {
@@ -135,7 +135,7 @@ export class GithubService {
         `/users/${username}/followers`,
         { params: { page, per_page: perPage } }
       );
-    } catch (error) {
+    } catch {
       // En caso de error, devolver un array vacío
       return [];
     }
@@ -150,7 +150,7 @@ export class GithubService {
         `/users/${username}/following`,
         { params: { page, per_page: perPage } }
       );
-    } catch (error) {
+    } catch {
       // En caso de error, devolver un array vacío
       return [];
     }

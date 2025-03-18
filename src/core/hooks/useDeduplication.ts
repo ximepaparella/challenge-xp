@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef } from 'react';
 
 interface PendingRequests {
-  [key: string]: Promise<any>;
+  [key: string]: Promise<unknown>;
 }
 
 interface RequestTimestamps {

@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useReducer, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import { User } from '@/features/users/types';
 import { useGithubService } from '@/features/users/hooks/useGithubService';
 
@@ -125,44 +125,61 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
   }, [state.favorites, state.isInitialized]);
 
   // Context value
-  const value = {
+  const addFavorite = useCallback(async (user: User) => {
+    try {
+      dispatch({ type: 'SET_LOADING', payload: true });
+      const completeUser = await githubService.getUser(user.login);
+      dispatch({ type: 'ADD_FAVORITE', payload: completeUser });
+    } catch (error) {
+      console.error('Error fetching complete user data:', error);
+      dispatch({ type: 'ADD_FAVORITE', payload: user });
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false });
+    }
+  }, [githubService]);
+
+  const removeFavorite = useCallback((login: string) => {
+    dispatch({ type: 'REMOVE_FAVORITE', payload: login });
+  }, []);
+
+  const isFavorite = useCallback((login: string) => {
+    return state.favorites.some(user => user.login === login);
+  }, [state.favorites]);
+
+  const updateFavoriteData = useCallback(async (login: string) => {
+    try {
+      // Check if we need to update (only if more than UPDATE_INTERVAL has passed)
+      const favorite = state.favorites.find(f => f.login === login);
+      if (!favorite || !favorite.lastUpdated || (Date.now() - favorite.lastUpdated > UPDATE_INTERVAL)) {
+        dispatch({ type: 'SET_LOADING', payload: true });
+        const updatedUser = await githubService.getUser(login);
+        dispatch({ type: 'UPDATE_FAVORITE', payload: updatedUser });
+      }
+    } catch (error) {
+      console.error('Error updating favorite data:', error);
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false });
+    }
+  }, [githubService, state.favorites]);
+
+  // Memoize the context value to prevent unnecessary re-renders
+  const value = useMemo(() => ({
     favorites: state.favorites,
     isLoading: state.isLoading,
     isInitialized: state.isInitialized,
-    addFavorite: async (user: User) => {
-      try {
-        dispatch({ type: 'SET_LOADING', payload: true });
-        const completeUser = await githubService.getUser(user.login);
-        dispatch({ type: 'ADD_FAVORITE', payload: completeUser });
-      } catch (error) {
-        console.error('Error fetching complete user data:', error);
-        dispatch({ type: 'ADD_FAVORITE', payload: user });
-      } finally {
-        dispatch({ type: 'SET_LOADING', payload: false });
-      }
-    },
-    removeFavorite: (login: string) => {
-      dispatch({ type: 'REMOVE_FAVORITE', payload: login });
-    },
-    isFavorite: (login: string) => {
-      return state.favorites.some(user => user.login === login);
-    },
-    updateFavoriteData: async (login: string) => {
-      try {
-        // Check if we need to update (only if more than UPDATE_INTERVAL has passed)
-        const favorite = state.favorites.find(f => f.login === login);
-        if (!favorite || !favorite.lastUpdated || (Date.now() - favorite.lastUpdated > UPDATE_INTERVAL)) {
-          dispatch({ type: 'SET_LOADING', payload: true });
-          const updatedUser = await githubService.getUser(login);
-          dispatch({ type: 'UPDATE_FAVORITE', payload: updatedUser });
-        }
-      } catch (error) {
-        console.error('Error updating favorite data:', error);
-      } finally {
-        dispatch({ type: 'SET_LOADING', payload: false });
-      }
-    }
-  };
+    addFavorite,
+    removeFavorite,
+    isFavorite,
+    updateFavoriteData
+  }), [
+    state.favorites,
+    state.isLoading,
+    state.isInitialized,
+    addFavorite,
+    removeFavorite,
+    isFavorite,
+    updateFavoriteData
+  ]);
 
   return (
     <FavoritesContext.Provider value={value}>
