@@ -1,0 +1,35 @@
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  text-align: center;
+  background-color: var(--fravega-white);
+  border-radius: var(--border-radius-md);
+  min-height: 200px;
+}
+
+.icon {
+  font-size: 48px;
+  margin-bottom: var(--spacing-md);
+  color: var(--fravega-gray);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  margin: 0 0 var(--spacing-sm);
+  color: var(--fravega-dark);
+}
+
+.message {
+  font-size: var(--font-size-md);
+  margin: 0 0 var(--spacing-lg);
+  color: var(--fravega-gray);
+  max-width: 500px;
+}
+
+.action {
+  margin-top: var(--spacing-md);
+} 

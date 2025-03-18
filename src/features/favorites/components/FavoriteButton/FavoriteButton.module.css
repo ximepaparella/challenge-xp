@@ -1,0 +1,137 @@
+/* Base styles for the favorite button */
+.favoriteButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  background: transparent;
+  outline: none;
+  gap: 0.5rem;
+  padding: 0;
+  color: var(--color-brand-primary);
+}
+
+.favoriteButton:hover {
+  transform: translateY(-2px);
+}
+
+.favoriteButton:active {
+  transform: translateY(0);
+}
+
+/* Icon-only variant */
+.icon {
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+}
+
+/* Size variants for the icon */
+.sm .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.md .icon {
+  width: 30px;
+  height: 30px;
+}
+
+.lg .icon {
+  width: 32px;
+  height: 32px;
+}
+
+/* Specific styles for card variant (icon only) */
+.icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem;
+  width: 40px;
+  height: 40px;
+  z-index: 2;
+}
+
+.icon.favorited {
+  color: var(--color-favorite, #e4245c);
+}
+
+.icon:hover {
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Specific styles for button variant (with text) */
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background-color: transparent;
+  border: 2px solid var(--color-brand-primary);
+  border-radius: 8px;
+  color: var(--color-brand-primary);
+  font-weight: 600;
+}
+
+.button.favorited {
+  background-color: var(--color-brand-primary);
+  color: white;
+}
+
+.button:hover {
+  background-color: rgba(128, 29, 217, 0.08);
+}
+
+.button.favorited:hover {
+  background-color: var(--color-brand-primary-dark, #6a15b4);
+  border-color: var(--color-brand-primary-dark, #6a15b4);
+}
+
+/* Size variants for the button */
+.button.sm {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.button.md {
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+}
+
+.button.lg {
+  padding: 0.85rem 1.5rem;
+  font-size: 1.125rem;
+}
+
+/* Label text */
+.label {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* Accessibility and focus */
+.favoriteButton:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 2px;
+}
+
+/* Animation for favoriting */
+@keyframes heartBeat {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.2); }
+  50% { transform: scale(1); }
+  75% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.favorited .icon {
+  animation: heartBeat 0.5s ease-in-out;
+} 

@@ -1,0 +1,135 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  border-radius: var(--border-radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(18, 89, 195, 0.3);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Variants */
+.variant-primary {
+  background-color: var(--fravega-primary);
+  color: white;
+}
+
+.variant-primary:hover:not(:disabled) {
+  background-color: var(--fravega-secondary);
+}
+
+.variant-secondary {
+  background-color: var(--fravega-light);
+  color: var(--fravega-dark);
+}
+
+.variant-secondary:hover:not(:disabled) {
+  background-color: var(--fravega-gray-light);
+}
+
+.variant-tertiary {
+  background-color: transparent;
+  color: var(--fravega-primary);
+  border: 1px solid var(--fravega-border);
+}
+
+.variant-tertiary:hover:not(:disabled) {
+  background-color: var(--fravega-gray-light);
+  border-color: var(--fravega-gray);
+}
+
+.variant-danger {
+  background-color: var(--fravega-error);
+  color: white;
+}
+
+.variant-danger:hover:not(:disabled) {
+  background-color: #c0392b;
+}
+
+/* Sizes */
+.size-sm {
+  font-size: var(--font-size-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  height: 32px;
+}
+
+.size-md {
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  height: 40px;
+}
+
+.size-lg {
+  font-size: var(--font-size-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  height: 48px;
+}
+
+/* Full width */
+.fullWidth {
+  width: 100%;
+}
+
+/* Loading state */
+.loading {
+  color: transparent !important;
+}
+
+.spinner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+  top: 50%;
+  left: 50%;
+  margin-top: -9px;
+  margin-left: -9px;
+}
+
+.variant-secondary .spinner,
+.variant-tertiary .spinner {
+  border: 2px solid rgba(18, 89, 195, 0.2);
+  border-top-color: var(--fravega-primary);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Icon positioning */
+.iconLeft {
+  margin-right: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+}
+
+.iconRight {
+  margin-left: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+} 

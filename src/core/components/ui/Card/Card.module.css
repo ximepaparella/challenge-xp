@@ -1,0 +1,76 @@
+.card {
+  background-color: var(--fravega-white);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+}
+
+/* Variants */
+.variant-default {
+  box-shadow: var(--shadow-sm);
+}
+
+.variant-outlined {
+  border: 1px solid var(--fravega-border);
+}
+
+.variant-elevated {
+  box-shadow: var(--shadow-md);
+}
+
+/* Padding */
+.padding-none {
+  padding: 0;
+}
+
+.padding-sm {
+  padding: var(--spacing-sm);
+}
+
+.padding-md {
+  padding: var(--spacing-md);
+}
+
+.padding-lg {
+  padding: var(--spacing-lg);
+}
+
+/* Card parts */
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--fravega-border);
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--fravega-dark);
+}
+
+.cardBody {
+  padding: var(--spacing-md);
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: var(--spacing-md);
+  border-top: 1px solid var(--fravega-border);
+  gap: var(--spacing-sm);
+}
+
+/* Handle nested cards */
+.card .card {
+  box-shadow: none;
+  border: 1px solid var(--fravega-border);
+}
+
+@media (max-width: 768px) {
+  .cardHeader, .cardBody, .cardFooter {
+    padding: var(--spacing-sm);
+  }
+} 

@@ -1,0 +1,139 @@
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  padding: 0;
+  background-color: transparent;
+}
+
+.iconButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(18, 89, 195, 0.3);
+}
+
+.iconButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Variants */
+.variant-primary {
+  color: var(--fravega-primary);
+}
+
+.variant-primary:hover:not(:disabled) {
+  background-color: rgba(18, 89, 195, 0.1);
+}
+
+.variant-secondary {
+  color: var(--fravega-dark);
+}
+
+.variant-secondary:hover:not(:disabled) {
+  background-color: var(--fravega-gray-light);
+}
+
+.variant-tertiary {
+  color: var(--fravega-gray);
+}
+
+.variant-tertiary:hover:not(:disabled) {
+  color: var(--fravega-dark);
+  background-color: var(--fravega-gray-light);
+}
+
+.variant-danger {
+  color: var(--fravega-error);
+}
+
+.variant-danger:hover:not(:disabled) {
+  background-color: rgba(231, 76, 60, 0.1);
+}
+
+/* Sizes */
+.size-sm {
+  width: 32px;
+  height: 32px;
+}
+
+.size-sm .icon {
+  font-size: 16px;
+}
+
+.size-md {
+  width: 40px;
+  height: 40px;
+}
+
+.size-md .icon {
+  font-size: 20px;
+}
+
+.size-lg {
+  width: 48px;
+  height: 48px;
+}
+
+.size-lg .icon {
+  font-size: 24px;
+}
+
+/* Active state */
+.active {
+  background-color: rgba(18, 89, 195, 0.1);
+}
+
+.variant-secondary.active {
+  background-color: var(--fravega-gray-light);
+}
+
+.variant-danger.active {
+  background-color: rgba(231, 76, 60, 0.1);
+}
+
+/* Loading state */
+.loading {
+  color: transparent !important;
+}
+
+.spinner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(18, 89, 195, 0.2);
+  border-radius: 50%;
+  border-top-color: var(--fravega-primary);
+  animation: spin 0.8s linear infinite;
+}
+
+.variant-secondary .spinner {
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-top-color: var(--fravega-dark);
+}
+
+.variant-tertiary .spinner {
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-top-color: var(--fravega-gray);
+}
+
+.variant-danger .spinner {
+  border: 2px solid rgba(231, 76, 60, 0.2);
+  border-top-color: var(--fravega-error);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} 

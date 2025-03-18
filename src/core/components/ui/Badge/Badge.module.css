@@ -1,0 +1,82 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Variants */
+.variant-primary {
+  background-color: var(--fravega-primary);
+  color: white;
+}
+
+.variant-secondary {
+  background-color: var(--fravega-light);
+  color: var(--fravega-dark);
+}
+
+.variant-success {
+  background-color: var(--fravega-success);
+  color: white;
+}
+
+.variant-warning {
+  background-color: #f39c12;
+  color: white;
+}
+
+.variant-danger {
+  background-color: var(--fravega-error);
+  color: white;
+}
+
+.variant-info {
+  background-color: #3498db;
+  color: white;
+}
+
+/* Sizes */
+.size-sm {
+  font-size: var(--font-size-xs);
+  padding: 2px var(--spacing-xs);
+  height: 18px;
+}
+
+.size-md {
+  font-size: var(--font-size-xs);
+  padding: 2px var(--spacing-sm);
+  height: 22px;
+}
+
+.size-lg {
+  font-size: var(--font-size-sm);
+  padding: 3px var(--spacing-md);
+  height: 28px;
+}
+
+/* Dot style */
+.dot {
+  position: relative;
+}
+
+.dot::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+  margin-right: var(--spacing-xs);
+}
+
+/* Icon */
+.icon {
+  display: flex;
+  margin-right: var(--spacing-xs);
+}
+
+.label {
+  line-height: 1;
+} 
