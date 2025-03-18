@@ -74,11 +74,23 @@ export function useUserList({
           console.log('useUserList.fetchUsers - Ejecutando búsqueda real');
           // Si estamos mostrando favoritos, filtrarlos en lugar de llamar a la API
           if (showFavorites) {
-            console.log('useUserList.fetchUsers - Usando favoritos filtrados');
-            const filteredFavorites = favorites.filter(user => 
-              !query || user.login.toLowerCase().includes(query.toLowerCase())
-            );
+            console.log('useUserList.fetchUsers - Usando favoritos filtrados', { query, favorites: favorites.length });
+            const queryLower = query.toLowerCase().trim();
             
+            const filteredFavorites = favorites.filter(user => {
+              if (!queryLower) return true; // If no query, show all favorites
+              
+              // Search in multiple user fields
+              return (
+                user.login.toLowerCase().includes(queryLower) || 
+                (user.name && user.name.toLowerCase().includes(queryLower)) ||
+                (user.bio && user.bio.toLowerCase().includes(queryLower)) ||
+                (user.location && user.location.toLowerCase().includes(queryLower)) ||
+                (user.company && user.company.toLowerCase().includes(queryLower))
+              );
+            });
+            
+            console.log(`useUserList.fetchUsers - Filtrados ${filteredFavorites.length} de ${favorites.length} favoritos`);
             return {
               total_count: filteredFavorites.length,
               incomplete_results: false,
@@ -152,9 +164,9 @@ export function useUserList({
     pagination.setIsLoading(true);
     
     try {
-      // Si es una consulta vacía y estamos mostrando favoritos, simplemente mostrar todos
+      // Si estamos mostrando favoritos y es una consulta vacía, mostrar todos los favoritos
       if (showFavorites && query.trim() === '') {
-        console.log('useUserList.searchUsers - Mostrando favoritos directamente');
+        console.log('useUserList.searchUsers - Mostrando todos los favoritos');
         pagination.reset(favorites, favorites.length);
         return;
       }

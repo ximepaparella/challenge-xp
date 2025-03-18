@@ -1,31 +1,26 @@
 import Head from 'next/head';
 import { User } from '@/features/users/types';
-import { useUserList } from '@/features/users/hooks';
 import { useFavorites } from '@/features/favorites/hooks';
 import SearchBar from '@/core/components/SearchBar';
 import UserGrid from '@/features/users/components/UserGrid';
 import styles from '@/styles/Home.module.css';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // Componente de presentación
 interface FavoritesViewProps {
   users: User[];
-  favorites: User[];
   loading: boolean;
   error: string | null;
   hasMore: boolean;
   onSearch: (query: string) => void;
-  onLoadMore: () => void;
 }
 
 const FavoritesView = ({
   users,
-  favorites,
   loading,
   error,
   hasMore,
-  onSearch,
-  onLoadMore
+  onSearch
 }: FavoritesViewProps) => {
   return (
     <>
@@ -42,7 +37,7 @@ const FavoritesView = ({
           <SearchBar onSearch={onSearch} placeholder="Buscar en favoritos..." />
         </header>
 
-        {favorites.length === 0 && !loading && !error && (
+        {users.length === 0 && !loading && !error && (
           <div className={styles.emptyState}>
             <p>No tienes favoritos aún.</p>
             <p>Explora usuarios y haz clic en el icono de corazón para agregarlos a tus favoritos.</p>
@@ -53,8 +48,7 @@ const FavoritesView = ({
           users={users} 
           loading={loading}
           error={error || undefined}
-          hasMore={hasMore}
-          onLoadMore={onLoadMore}
+          hasMore={false}
         />
       </div>
     </>
@@ -64,25 +58,43 @@ const FavoritesView = ({
 // Componente contenedor principal
 export default function FavoritesPage() {
   const { favorites, isLoading: isFavoritesLoading, isInitialized } = useFavorites();
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   
-  const {
-    users,
-    loading,
-    searchUsers,
-    loadMoreUsers,
-    hasMore,
-    error
-  } = useUserList({ favorites, showFavorites: true });
-
-  // Reset search when favorites change
+  // Filter favorites based on search query
   useEffect(() => {
-    if (isInitialized) {
-      searchUsers('');
+    if (!isInitialized) return;
+    
+    setLoading(true);
+    
+    // If no query, show all favorites
+    if (!searchQuery.trim()) {
+      setFilteredUsers(favorites);
+      setLoading(false);
+      return;
     }
-  }, [favorites, isInitialized, searchUsers]);
-
+    
+    const query = searchQuery.toLowerCase().trim();
+    
+    // Filter favorites based on multiple fields
+    const filtered = favorites.filter(user => {
+      return (
+        user.login.toLowerCase().includes(query) || 
+        (user.name && user.name.toLowerCase().includes(query)) ||
+        (user.bio && user.bio.toLowerCase().includes(query)) ||
+        (user.location && user.location.toLowerCase().includes(query)) ||
+        (user.company && user.company.toLowerCase().includes(query))
+      );
+    });
+    
+    setFilteredUsers(filtered);
+    setLoading(false);
+  }, [favorites, searchQuery, isInitialized]);
+  
   const handleSearch = (query: string) => {
-    searchUsers(query);
+    console.log('FavoritesPage - Searching favorites:', query);
+    setSearchQuery(query);
   };
 
   if (!isInitialized || isFavoritesLoading) {
@@ -98,13 +110,11 @@ export default function FavoritesPage() {
   // Pasar props al componente de presentación
   return (
     <FavoritesView
-      users={users}
-      favorites={favorites}
+      users={filteredUsers}
       loading={loading}
-      error={error ? error.message : null}
-      hasMore={hasMore}
+      error={null}
+      hasMore={false}
       onSearch={handleSearch}
-      onLoadMore={loadMoreUsers}
     />
   );
 } 
