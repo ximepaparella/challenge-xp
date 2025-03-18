@@ -93,13 +93,11 @@ export class ApiClient {
    * prepares the headers for a request
    */
   private prepareHeaders(customHeaders?: Record<string, string>): Headers {
-    console.log('ApiClient.prepareHeaders - Preparando encabezados');
     const headers = new Headers(this.defaultHeaders);
     
     // Add the authentication token if available
     if (this.tokenProvider) {
       const token = this.tokenProvider();
-      console.log('ApiClient.prepareHeaders - Token:', token ? 'Available' : 'Not available');
       
       if (token) {
         console.log('ApiClient.prepareHeaders - Añadiendo token de autenticación');
@@ -111,15 +109,11 @@ export class ApiClient {
     
     // Add custom headers if provided
     if (customHeaders) {
-      console.log('ApiClient.prepareHeaders - Adding custom headers');
       Object.entries(customHeaders).forEach(([key, value]) => {
         headers.set(key, value);
       });
     }
     
-    // Register the configured headers (without sensitive values)
-    const headerKeys = Array.from(headers.keys());
-    console.log('ApiClient.prepareHeaders - Headers configured:', headerKeys);
     
     return headers;
   }
@@ -128,7 +122,6 @@ export class ApiClient {
    * Processes the response of a request
    */
   private async processResponse<T>(response: Response, endpoint: string): Promise<T> {
-    console.log(`ApiClient.processResponse - Procesando respuesta [${endpoint}]`);
     
     if (!response.ok) {
       console.log(`ApiClient.processResponse - Respuesta no válida [${endpoint}]`, { 
@@ -186,8 +179,7 @@ export class ApiClient {
   async get<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
     const { params, headers, signal } = options;
     const url = this.buildUrl(endpoint, params);
-    
-    console.log(`ApiClient.get - Inicio [${endpoint}]`, { url, params });
+  
     
     try {
       const response = await fetch(url, {
