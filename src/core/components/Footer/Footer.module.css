@@ -36,7 +36,7 @@
 }
 
 .navLink {
-  color: white;
+  color: var(--foreground);
   text-decoration: none;
   font-size: var(--font-size-sm);
   opacity: 0.8;

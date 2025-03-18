@@ -24,7 +24,7 @@
 }
 
 .logoLink {
-  color: var(--color-brand-primary);
+  color: var(--foreground);
   text-decoration: none;
   transition: all 0.2s ease;
   display: flex;
@@ -59,7 +59,7 @@
 }
 
 .navLink {
-  color: var(--color-text-secondary);
+  color: var(--foreground);
   text-decoration: none;
   font-weight: 500;
   padding: 0.5rem 1rem;
@@ -76,12 +76,12 @@
 }
 
 .navLink:hover {
-  color: var(--color-text-primary);
+  color: var(--foreground);
   background-color: rgba(115, 103, 240, 0.05);
 }
 
 .active {
-  color: var(--color-brand-primary);
+  color: var(--foreground);
   background-color: rgba(115, 103, 240, 0.08);
   font-weight: 600;
 }
@@ -93,7 +93,7 @@
   left: 50%;
   width: 30px;
   height: 3px;
-  background-color: var(--color-brand-primary);
+  background-color: var(--foreground);
   border-radius: 10px;
   transform: translateX(-50%);
 }

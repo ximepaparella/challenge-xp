@@ -33,7 +33,7 @@
 }
 
 .footerLink {
-  color: var(--color-brand-primary);
+  color: var(--foreground);
   text-decoration: none;
   transition: color 0.2s ease;
 }

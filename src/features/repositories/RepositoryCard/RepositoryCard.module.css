@@ -14,7 +14,7 @@
 .repoCard:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-card-hover);
-  border-color: var(--color-brand-primary);
+  border-color: var(--foreground);
 }
 
 .repoName {
@@ -25,7 +25,7 @@
 }
 
 .repoLink {
-  color: var(--color-brand-primary);
+  color: var(--foreground);
   text-decoration: none;
   transition: color 0.2s ease;
 }
