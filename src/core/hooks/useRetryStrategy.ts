@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, useEffect } from 'react';
 
 interface RetryOptions {
   /** Número máximo de intentos de reintento */
@@ -44,11 +44,19 @@ export function useRetryStrategy({
   const retryTimeoutsRef = useRef<NodeJS.Timeout[]>([]);
   
   /**
+   * Limpia todos los timeouts pendientes
+   */
+  const cleanup = useCallback((): void => {
+    retryTimeoutsRef.current.forEach(timeoutId => clearTimeout(timeoutId));
+    retryTimeoutsRef.current = [];
+  }, []);
+  
+  /**
    * Calcula el tiempo de backoff basado en el número de intentos
    */
   const calculateBackoffTime = useCallback((errorCount: number): number => {
     // Backoff exponencial con jitter para evitar thundering herd
-    const expBackoff = baseRetryInterval * Math.pow(2, Math.min(errorCount, 10));
+    const expBackoff = baseRetryInterval * Math.pow(2, Math.min(errorCount - 1, 10));
     const jitter = Math.random() * 0.3 * expBackoff; // 30% jitter
     return Math.min(expBackoff + jitter, maxRetryInterval);
   }, [baseRetryInterval, maxRetryInterval]);
@@ -57,48 +65,42 @@ export function useRetryStrategy({
    * Maneja un error y potencialmente programa un reintento
    */
   const handleError = useCallback((error: Error, skipRetry = false): void => {
-    const now = Date.now();
-    const newErrorCount = retryState.errorCount + 1;
+    cleanup(); // Limpiar timeouts anteriores
     
-    setRetryState(() => ({
-      errorCount: newErrorCount,
-      lastErrorTimestamp: now,
-      error,
-      isInCooldown: true
-    }));
-    
-    // No reintentar si se solicita explícitamente o si hemos excedido los intentos
-    if (skipRetry || newErrorCount > maxRetryAttempts) {
-      return;
-    }
-    
-    // Calcular el tiempo de backoff
-    const backoffTime = calculateBackoffTime(newErrorCount);
-    
-    // Notificar del reintento si hay un callback
-    if (onRetry) {
-      onRetry(newErrorCount, error, backoffTime);
-    }
-    
-    // Programar el fin del período de cooldown
-    const timeoutId = setTimeout(() => {
-      setRetryState(prev => ({
-        ...prev,
-        isInCooldown: false
-      }));
-    }, backoffTime);
-    
-    // Guardar el timeout para limpieza
-    retryTimeoutsRef.current.push(timeoutId);
-  }, [calculateBackoffTime, maxRetryAttempts, onRetry, retryState.errorCount]);
-  
-  /**
-   * Limpia todos los timeouts pendientes
-   */
-  const cleanup = useCallback((): void => {
-    retryTimeoutsRef.current.forEach(timeoutId => clearTimeout(timeoutId));
-    retryTimeoutsRef.current = [];
-  }, []);
+    setRetryState(prev => {
+      const newErrorCount = prev.errorCount + 1;
+      const now = Date.now();
+      
+      // No reintentar si se solicita explícitamente o si hemos excedido los intentos
+      if (!skipRetry && newErrorCount <= maxRetryAttempts) {
+        // Calcular el tiempo de backoff
+        const backoffTime = calculateBackoffTime(newErrorCount);
+        
+        // Notificar del reintento si hay un callback
+        if (onRetry) {
+          onRetry(newErrorCount, error, backoffTime);
+        }
+        
+        // Programar el fin del período de cooldown
+        const timeoutId = setTimeout(() => {
+          setRetryState(prev => ({
+            ...prev,
+            isInCooldown: false
+          }));
+        }, backoffTime);
+        
+        // Guardar el timeout para limpieza
+        retryTimeoutsRef.current = [timeoutId];
+      }
+      
+      return {
+        errorCount: newErrorCount,
+        lastErrorTimestamp: now,
+        error,
+        isInCooldown: true
+      };
+    });
+  }, [cleanup, calculateBackoffTime, maxRetryAttempts, onRetry]);
   
   /**
    * Reinicia el estado de reintento
@@ -138,7 +140,10 @@ export function useRetryStrategy({
         }
         
         // Esperar antes de reintentar
-        await new Promise(resolve => setTimeout(resolve, backoffTime));
+        await new Promise(resolve => {
+          const timeoutId = setTimeout(resolve, backoffTime);
+          retryTimeoutsRef.current.push(timeoutId);
+        });
         
         // Reintentar
         return executeWithRetry(fn, attempt + 1);
@@ -150,11 +155,18 @@ export function useRetryStrategy({
     }
   }, [calculateBackoffTime, handleError, maxRetryAttempts, onRetry, resetRetryState]);
   
+  // Limpiar timeouts al desmontar
+  useEffect(() => {
+    return () => {
+      cleanup();
+    };
+  }, [cleanup]);
+
+  // Retornar el estado y las funciones
   return {
     retryState,
     handleError,
-    executeWithRetry,
-    cleanup,
-    resetRetryState
+    resetRetryState,
+    executeWithRetry
   };
 } 
