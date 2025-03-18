@@ -186,31 +186,30 @@ export function useUserList({
   
   // Manejar la carga inicial
   useEffect(() => {
-    // Solo hacer la carga inicial en el primer montaje y si no estamos mostrando favoritos
+    // Only do initial load on first mount and if not showing favorites
     if (isFirstMountRef.current) {
       isFirstMountRef.current = false;
       
       if (!showFavorites) {
-        console.log('useUserList.useEffect - Carga inicial de usuarios');
+        console.log('useUserList.useEffect - Initial user load');
         searchUsers('');
       } else {
-        // Si estamos en la página de favoritos, usar los favoritos pasados sin hacer petición
-        console.log('useUserList.useEffect - Cargando favoritos', favorites.length);
+        // If we're on favorites page, use passed favorites without making a request
+        console.log('useUserList.useEffect - Loading favorites', favorites.length);
         pagination.reset(favorites, favorites.length);
       }
     }
     
-    // Limpiar al desmontar
+    // Cleanup on unmount
     return () => {
-      console.log('useUserList.useEffect - Limpiando');
+      console.log('useUserList.useEffect - Cleaning up');
       isMountedRef.current = false;
-      const currentTimeout = searchTimeoutRef.current;
-      if (currentTimeout) {
-        clearTimeout(currentTimeout);
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
       }
       retryStrategy.cleanup();
     };
-  }, [favorites, pagination, retryStrategy, searchUsers, showFavorites]);
+  }, [favorites, pagination, retryStrategy, searchUsers, showFavorites, searchTimeoutRef]);
   
   // Devolver los valores necesarios
   return {

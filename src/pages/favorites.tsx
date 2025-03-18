@@ -11,7 +11,6 @@ interface FavoritesViewProps {
   users: User[];
   loading: boolean;
   error: string | null;
-  hasMore: boolean;
   onSearch: (query: string) => void;
 }
 
@@ -19,7 +18,6 @@ const FavoritesView = ({
   users,
   loading,
   error,
-  hasMore,
   onSearch
 }: FavoritesViewProps) => {
   return (
@@ -113,7 +111,6 @@ export default function FavoritesPage() {
       users={filteredUsers}
       loading={loading}
       error={null}
-      hasMore={false}
       onSearch={handleSearch}
     />
   );
