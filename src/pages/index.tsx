@@ -1,8 +1,8 @@
 import { useUserList } from '@/features/users/hooks';
 import { useFavorites } from '@/features/favorites/hooks';
-import HomeView from '@/components/Home/HomeView';
+import { HomeView } from '@/features/home/components';
 
-// Componente contenedor principal
+// Main container component
 export default function HomePage() {
   const { favorites } = useFavorites();
   
@@ -19,7 +19,7 @@ export default function HomePage() {
     searchUsers(query);
   };
 
-  // Pasar props al componente de presentación
+  // Pass props to the presentation component
   return (
     <HomeView
       users={users}

@@ -76,7 +76,7 @@ const UserCardView = ({ user }: UserCardViewProps) => {
       
       <div className={styles.cardFooter}>
         <Link href={`/user/${user.login}`} className={styles.viewProfileButton}>
-          View profile
+          Ver perfil
         </Link>
         <a 
           href={user.html_url} 

@@ -90,7 +90,7 @@ export class GithubService {
           total_count: 1000, // A large number to simulate the total
           incomplete_results: false
         };
-      } catch (err) {
+      } catch {
         return MockDataService.getMockSearchResults('', page, perPage);
       }
     }
@@ -103,10 +103,10 @@ export class GithubService {
         { params: { q: query, page, per_page: perPage } }
       );
       return result;
-    } catch (err) {
+    } catch (error) {
       // Check if it's a rate limit error
-      const isRateLimitError = err instanceof Error && 
-        err.message.includes('rate limit');
+      const isRateLimitError = error instanceof Error && 
+        error.message.includes('rate limit');
       
       if (process.env.NODE_ENV !== 'production') {
         if (isRateLimitError) {

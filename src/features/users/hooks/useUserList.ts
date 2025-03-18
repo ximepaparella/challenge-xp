@@ -39,7 +39,7 @@ export function useUserList({
   const deduplication = useDeduplication();
   const retryStrategy = useRetryStrategy({
     maxRetryAttempts: 2,
-    onRetry: (attempt, error, backoffTime) => {
+    onRetry: () => {
       // Removed console.log
     }
   });

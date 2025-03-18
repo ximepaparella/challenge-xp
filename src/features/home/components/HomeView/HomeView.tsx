@@ -14,8 +14,8 @@ export interface HomeViewProps {
 }
 
 /**
- * Componente de presentación para la página principal
- * Se encarga únicamente del renderizado y no contiene lógica de negocio
+ * Presentation component for the main page
+ * Only responsible for rendering and contains no business logic
  */
 const HomeView = ({
   users,
@@ -28,15 +28,15 @@ const HomeView = ({
   return (
     <>
       <Head>
-        <title>Buscar Usuarios | GitHub Explorer</title>
-        <meta name="description" content="Buscar usuarios de GitHub y sus repositorios" />
+        <title>Buscar usuarios | GitHub Explorer</title>
+        <meta name="description" content="Buscar usuarios y sus repositorios" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       
       <div className={styles.container}>
         <header className={styles.header}>
-          <h1 className={styles.title}>Buscador de usuarios de GitHub</h1>
+          <h1 className={styles.title}>Buscar usuarios</h1>
           <SearchBar onSearch={onSearch} placeholder="Buscar usuarios..." />
         </header>
 

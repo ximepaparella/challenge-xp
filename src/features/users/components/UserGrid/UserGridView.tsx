@@ -21,7 +21,7 @@ const UserGridView = memo(({ users, loading, error, hasMore = false, onLoadMore 
     if (onLoadMore && hasMore && !loading) {
       onLoadMore();
     }
-  }, [hasMore, loading, onLoadMore, users.length]);
+  }, [hasMore, loading, onLoadMore]);
   
   // If we have an error
   if (error) {
@@ -44,7 +44,7 @@ const UserGridView = memo(({ users, loading, error, hasMore = false, onLoadMore 
     return (
       <div className={styles.loading} role="status" aria-live="polite">
         <div className={styles.spinner} aria-hidden="true"></div>
-        <p>Loading users...</p>
+        <p>Cargando usuarios...</p>
       </div>
     );
   }
@@ -60,7 +60,7 @@ const UserGridView = memo(({ users, loading, error, hasMore = false, onLoadMore 
             <line x1="9" y1="9" x2="9.01" y2="9"></line>
             <line x1="15" y1="9" x2="15.01" y2="9"></line>
           </svg>
-          <p>No users found. Try another search.</p>
+          <p>No se encontraron usuarios</p>
         </div>
       </div>
     );
@@ -81,7 +81,7 @@ const UserGridView = memo(({ users, loading, error, hasMore = false, onLoadMore 
         {loading ? (
           <>
             <div className={styles.spinner} aria-hidden="true"></div>
-            <p>Loading more users...</p>
+            <p>Cargando más usuarios...</p>
           </>
         ) : hasMore ? (
           <button 
@@ -89,7 +89,7 @@ const UserGridView = memo(({ users, loading, error, hasMore = false, onLoadMore 
             onClick={handleLoadMore}
             disabled={loading}
           >
-            Load more
+            Cargar más usuarios
           </button>
         ) : null}
       </div>

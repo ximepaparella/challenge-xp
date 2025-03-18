@@ -23,16 +23,16 @@ const FavoritesView = ({
   return (
     <>
       <Head>
-        <title>Favorites | GitHub Explorer</title>
-        <meta name="description" content="Explore users and click the heart icon to add them to your favorites!" />
+        <title>Favoritos | GitHub Explorer</title>
+        <meta name="description" content="Explora usuarios y haz clic en el icono de corazón para agregarlos a tus favoritos!" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       
       <div className={styles.container}>
         <header className={styles.header}>
-          <h1 className={styles.title}>My favorites</h1>
-          <SearchBar onSearch={onSearch} placeholder="Search in favorites..." />
+          <h1 className={styles.title}>Mis favoritos</h1>
+          <SearchBar onSearch={onSearch} placeholder="Buscar en favoritos..." />
         </header>
 
         <UserGrid 
@@ -91,7 +91,7 @@ export default function FavoritesPage() {
     return (
       <div className={styles.container}>
         <div className={styles.loadingState}>
-          <p>Loading favorites...</p>
+          <p>Cargando favoritos...</p>
         </div>
       </div>
     );
