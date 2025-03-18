@@ -1,6 +1,6 @@
 /**
- * Archivo de barril (barrel file) para hooks relacionados con usuarios
- * Facilita la importación de múltiples hooks en un solo statement
+ * Barrel file for user-related hooks
+ * Makes it easier to import multiple hooks with a single statement
  */
 
 export * from './useUserList';

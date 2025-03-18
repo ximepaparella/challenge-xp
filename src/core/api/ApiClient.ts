@@ -1,4 +1,4 @@
-// Tipos para las opciones de solicitud
+// Types for request options
 export interface RequestOptions {
   params?: Record<string, unknown>;
   headers?: Record<string, string>;
@@ -6,7 +6,7 @@ export interface RequestOptions {
   signal?: AbortSignal;
 }
 
-// Configuraciones del cliente
+// Client configurations
 export interface ApiClientConfig {
   baseUrl: string;
   defaultHeaders?: Record<string, string>;
@@ -16,7 +16,7 @@ export interface ApiClientConfig {
 }
 
 /**
- * Cliente HTTP genérico para realizar solicitudes a APIs
+ * Generic HTTP client for making requests to APIs
  */
 export class ApiClient {
   private baseUrl: string;
@@ -43,7 +43,7 @@ export class ApiClient {
   }
   
   /**
-   * Construye y normaliza la URL para una solicitud
+   * Builds and normalizes the URL for a request
    */
   private buildUrl(endpoint: string, params?: Record<string, unknown>): string {
     // Asegurar que el endpoint comience con /
@@ -51,11 +51,11 @@ export class ApiClient {
     
     let fullUrl: string;
     try {
-      // Intentar construir URL completa
+      // Try to build the full URL
       fullUrl = `${this.baseUrl}${normalizedEndpoint}`;
       const url = new URL(fullUrl);
       
-      // Añadir parámetros de consulta si se proporcionan
+      // Add query parameters if provided
       if (params) {
         Object.entries(params).forEach(([key, value]) => {
           if (value !== undefined && value !== null) {
@@ -72,10 +72,10 @@ export class ApiClient {
         error
       });
       
-      // Fallback para manejar posibles errores
+      // Fallback to handle possible errors
       fullUrl = `${this.baseUrl}${normalizedEndpoint}`;
       
-      // Añadir parámetros manualmente si hay un error
+      // Add parameters manually if there is an error
       if (params && Object.keys(params).length > 0) {
         const queryParams = Object.entries(params)
           .filter(([, value]) => value !== undefined && value !== null)
@@ -90,16 +90,16 @@ export class ApiClient {
   }
   
   /**
-   * Prepara los encabezados para una solicitud
+   * prepares the headers for a request
    */
   private prepareHeaders(customHeaders?: Record<string, string>): Headers {
     console.log('ApiClient.prepareHeaders - Preparando encabezados');
     const headers = new Headers(this.defaultHeaders);
     
-    // Añadir el token de autenticación si está disponible
+    // Add the authentication token if available
     if (this.tokenProvider) {
       const token = this.tokenProvider();
-      console.log('ApiClient.prepareHeaders - Token:', token ? 'Disponible' : 'No disponible');
+      console.log('ApiClient.prepareHeaders - Token:', token ? 'Available' : 'Not available');
       
       if (token) {
         console.log('ApiClient.prepareHeaders - Añadiendo token de autenticación');
@@ -109,23 +109,23 @@ export class ApiClient {
       }
     }
     
-    // Añadir encabezados personalizados si se proporcionan
+    // Add custom headers if provided
     if (customHeaders) {
-      console.log('ApiClient.prepareHeaders - Añadiendo encabezados personalizados');
+      console.log('ApiClient.prepareHeaders - Adding custom headers');
       Object.entries(customHeaders).forEach(([key, value]) => {
         headers.set(key, value);
       });
     }
     
-    // Registrar los headers configurados (sin valores sensibles)
+    // Register the configured headers (without sensitive values)
     const headerKeys = Array.from(headers.keys());
-    console.log('ApiClient.prepareHeaders - Headers configurados:', headerKeys);
+    console.log('ApiClient.prepareHeaders - Headers configured:', headerKeys);
     
     return headers;
   }
   
   /**
-   * Procesa la respuesta de una solicitud
+   * Processes the response of a request
    */
   private async processResponse<T>(response: Response, endpoint: string): Promise<T> {
     console.log(`ApiClient.processResponse - Procesando respuesta [${endpoint}]`);
@@ -139,14 +139,14 @@ export class ApiClient {
       let errorMessage: string;
       
       try {
-        // Intentar analizar el cuerpo de la respuesta para obtener detalles del error
+        // Try to analyze the response body to get error details
         const errorData = await response.json();
         errorMessage = errorData.message || `HTTP error ${response.status}`;
-        console.log(`ApiClient.processResponse - Mensaje de error analizado [${endpoint}]:`, errorMessage);
+        console.log(`ApiClient.processResponse - Analyzed error message [${endpoint}]:`, errorMessage);
       } catch {
-        // Si no se puede analizar, usar un mensaje genérico
+        // If it cannot be analyzed, use a generic message
         errorMessage = `HTTP error ${response.status}`;
-        console.log(`ApiClient.processResponse - Error al analizar mensaje [${endpoint}], usando genérico:`, errorMessage);
+        console.log(`ApiClient.processResponse - Error analyzing message [${endpoint}], using generic:`, errorMessage);
       }
       
       const error = new Error(errorMessage);
@@ -157,9 +157,9 @@ export class ApiClient {
       throw error;
     }
     
-    // Para respuestas 204 No Content, devolver undefined
+    // For responses 204 No Content, return undefined
     if (response.status === 204) {
-      console.log(`ApiClient.processResponse - Respuesta sin contenido (204) [${endpoint}]`);
+      console.log(`ApiClient.processResponse - Response without content (204) [${endpoint}]`);
       return undefined as unknown as T;
     }
     
@@ -167,9 +167,9 @@ export class ApiClient {
       console.log(`ApiClient.processResponse - Analizando respuesta JSON [${endpoint}]`);
       const data = await response.json() as T;
       
-      // Notificar sobre la respuesta procesada
+      // Notify about the processed response
       if (this.onResponse) {
-        console.log(`ApiClient.processResponse - Llamando manejador de respuesta [${endpoint}]`);
+        console.log(`ApiClient.processResponse - Calling response handler [${endpoint}]`);
         this.onResponse(response, data);
       }
       
@@ -209,7 +209,7 @@ export class ApiClient {
   }
   
   /**
-   * Realiza una solicitud HTTP POST
+   * Makes a HTTP POST request
    */
   async post<T>(endpoint: string, body?: unknown, options: RequestOptions = {}): Promise<T> {
     const { params, headers, signal } = options;
@@ -226,7 +226,7 @@ export class ApiClient {
   }
   
   /**
-   * Realiza una solicitud HTTP PUT
+   * Makes a HTTP PUT request
    */
   async put<T>(endpoint: string, body?: unknown, options: RequestOptions = {}): Promise<T> {
     const { params, headers, signal } = options;
@@ -243,7 +243,7 @@ export class ApiClient {
   }
   
   /**
-   * Realiza una solicitud HTTP DELETE
+   * Makes a HTTP DELETE request
    */
   async delete<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
     const { params, headers, signal } = options;
@@ -259,7 +259,7 @@ export class ApiClient {
   }
   
   /**
-   * Realiza una solicitud HTTP PATCH
+   * Makes a HTTP PATCH request
    */
   async patch<T>(endpoint: string, body?: unknown, options: RequestOptions = {}): Promise<T> {
     const { params, headers, signal } = options;
@@ -277,9 +277,9 @@ export class ApiClient {
 }
 
 /**
- * Hook para crear y acceder a una instancia de ApiClient
+ * Hook to create and access an ApiClient instance
  */
 export function useApiClient(config: ApiClientConfig): ApiClient {
-  // Crear una instancia única del cliente
+  // Create a unique instance of the client
   return new ApiClient(config);
 } 

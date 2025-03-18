@@ -11,8 +11,8 @@ export interface UserCardViewProps {
 }
 
 /**
- * Componente de presentación pura para mostrar información de un usuario
- * Este componente se encarga sólo del renderizado y no contiene lógica de negocio.
+ * Pure presentation component to display user information
+ * This component is only responsible for rendering and contains no business logic.
  */
 const UserCardView = ({ user }: UserCardViewProps) => {
   return (
@@ -76,7 +76,7 @@ const UserCardView = ({ user }: UserCardViewProps) => {
       
       <div className={styles.cardFooter}>
         <Link href={`/user/${user.login}`} className={styles.viewProfileButton}>
-          Ver perfil
+          View profile
         </Link>
         <a 
           href={user.html_url} 

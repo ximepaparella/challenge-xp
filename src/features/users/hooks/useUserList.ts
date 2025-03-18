@@ -18,63 +18,61 @@ interface UseUserListReturn {
 }
 
 /**
- * Hook para administrar la lista de usuarios de GitHub
+ * Hook for managing GitHub users list
  */
 export function useUserList({
   favorites = [],
   showFavorites = false
 }: UseUserListProps = {}): UseUserListReturn {
-  // Estado para controlar la consulta de búsqueda
+  // State to control search query
   const [searchQuery, setSearchQuery] = useState<string>('');
   
-  // Referencias para seguimiento del estado del componente
+  // References to track component state
   const isMountedRef = useRef(true);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  // Bandera para controlar si ya se ha realizado la carga inicial
+  // Flag to control if initial load has been performed
   const isFirstMountRef = useRef(true);
   
-  // Hooks refactorizados
+  // Refactored hooks
   const githubService = useGithubService();
   const cache = useGithubCache();
   const deduplication = useDeduplication();
   const retryStrategy = useRetryStrategy({
     maxRetryAttempts: 2,
     onRetry: (attempt, error, backoffTime) => {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`Retrying after error (attempt ${attempt}) in ${backoffTime}ms: ${error.message}`);
-      }
+      // Removed console.log
     }
   });
   
-  // Función para buscar usuarios basada en el servicio de Github
+  // Function to search users based on GitHub service
   const fetchUsers = useCallback(async (
     query: string, 
     page: number,
     itemsPerPage: number
   ): Promise<GithubSearchResult> => {
-    console.log('useUserList.fetchUsers - Inicio', { query, page, itemsPerPage });
+    // Removed console.log
     
-    // Crear una clave única para esta solicitud (sin timestamp para poder reutilizar el caché)
+    // Create a unique key for this request (without timestamp to be able to reuse cache)
     const cacheKey = `users_${query}_${page}_${itemsPerPage}`;
-    console.log(`useUserList.fetchUsers - Usando clave de caché: ${cacheKey}`);
+    // Removed console.log
     
-    // Verificar caché primero (para todas las páginas)
+    // Check cache first (for all pages)
     const cachedData = cache.getCachedData<GithubSearchResult>(cacheKey);
     if (cachedData) {
-      console.log(`useUserList.fetchUsers - Usando datos en caché para: ${cacheKey}`);
+      // Removed console.log
       return cachedData;
     }
     
     try {
-      console.log('useUserList.fetchUsers - Obteniendo datos frescos');
-      // Intentar obtener los datos con deduplicación
+      // Removed console.log
+      // Try to get data with deduplication
       const result = await deduplication.executeWithDeduplication<GithubSearchResult>(
         cacheKey,
         async () => {
-          console.log('useUserList.fetchUsers - Ejecutando búsqueda real');
-          // Si estamos mostrando favoritos, filtrarlos en lugar de llamar a la API
+          // Removed console.log
+          // If showing favorites, filter them instead of calling API
           if (showFavorites) {
-            console.log('useUserList.fetchUsers - Usando favoritos filtrados', { query, favorites: favorites.length });
+            // Removed console.log
             const queryLower = query.toLowerCase().trim();
             
             const filteredFavorites = favorites.filter(user => {
@@ -90,7 +88,7 @@ export function useUserList({
               );
             });
             
-            console.log(`useUserList.fetchUsers - Filtrados ${filteredFavorites.length} de ${favorites.length} favoritos`);
+            // Removed console.log
             return {
               total_count: filteredFavorites.length,
               incomplete_results: false,
@@ -98,22 +96,22 @@ export function useUserList({
             };
           }
           
-          // Caso estándar: buscar usuarios a través del servicio
-          console.log('useUserList.fetchUsers - Llamando a githubService.searchUsers');
+          // Standard case: search users through service
+          // Removed console.log
           return await githubService.searchUsers(query, page, itemsPerPage);
         }
       );
       
-      // Guardar el resultado en caché
-      console.log(`useUserList.fetchUsers - Guardando resultado en caché (${result.items.length} items)`);
+      // Save result in cache
+      // Removed console.log
       cache.setCachedData(cacheKey, result);
       
       return result;
     } catch (error) {
-      console.error('useUserList.fetchUsers - Error:', error);
-      // Si estamos en cooldown, devolver un resultado vacío
+      // Removed console.error
+      // If in cooldown, return empty result
       if (deduplication.isInCooldown(cacheKey)) {
-        console.log('useUserList.fetchUsers - En cooldown, devolviendo resultado vacío');
+        // Removed console.log
         return { 
           items: [], 
           total_count: 0, 
@@ -121,12 +119,12 @@ export function useUserList({
         };
       }
       
-      // Propagar el error para que el hook de paginación lo maneje
+      // Propagate error for pagination hook to handle
       throw error;
     }
   }, [cache, deduplication, favorites, githubService, showFavorites]);
   
-  // Inicializar el hook de paginación con nuestra función de búsqueda
+  // Initialize pagination hook with our search function
   const pagination = usePagination<User>({
     fetchItems: async (page, itemsPerPage) => {
       try {
@@ -136,7 +134,7 @@ export function useUserList({
           total: result.total_count
         };
       } catch (error) {
-        // Manejar el error con nuestra estrategia de reintentos
+        // Handle error with our retry strategy
         retryStrategy.handleError(error instanceof Error ? error : new Error(String(error)));
         throw error;
       }
@@ -148,43 +146,43 @@ export function useUserList({
     }
   });
   
-  // Función para buscar usuarios (expuesta al componente)
+  // Function to search users (exposed to component)
   const searchUsers = useCallback(async (query: string) => {
-    console.log(`useUserList.searchUsers - Buscando: "${query}"`);
+    // Removed console.log
     
-    // Limpiar cualquier tiempo de espera anterior
+    // Clear any previous timeout
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
     
-    // Actualizar la consulta de búsqueda
+    // Update search query
     setSearchQuery(query);
     
-    // Indicar que estamos cargando
+    // Indicate that we're loading
     pagination.setIsLoading(true);
     
     try {
-      // Si estamos mostrando favoritos y es una consulta vacía, mostrar todos los favoritos
+      // If showing favorites and empty query, show all favorites
       if (showFavorites && query.trim() === '') {
-        console.log('useUserList.searchUsers - Mostrando todos los favoritos');
+        // Removed console.log
         pagination.reset(favorites, favorites.length);
         return;
       }
       
-      // Iniciar la búsqueda desde la página 1
+      // Start search from page 1
       const result = await fetchUsers(query, 1, 10);
       
-      // Actualizar la paginación con los resultados
+      // Update pagination with results
       pagination.reset(result.items, result.total_count);
     } catch (error) {
-      // Los errores ya son manejados por fetchUsers y pagination
+      // Errors are already handled by fetchUsers and pagination
       pagination.setError(error instanceof Error ? error : new Error(String(error)));
     } finally {
       pagination.setIsLoading(false);
     }
   }, [favorites, fetchUsers, pagination, showFavorites]);
   
-  // Manejar la carga inicial
+  // Handle initial load
   useEffect(() => {
     isMountedRef.current = true;
     const currentSearchTimeout = searchTimeoutRef.current;
@@ -194,17 +192,17 @@ export function useUserList({
       isFirstMountRef.current = false;
       
       if (!showFavorites) {
-        console.log('useUserList.useEffect - Initial user load');
+        // Removed console.log
         searchUsers('');
       } else {
         // If we're on favorites page, use passed favorites without making a request
-        console.log('useUserList.useEffect - Loading favorites', favorites.length);
+        // Removed console.log
         pagination.reset(favorites, favorites.length);
       }
     }
 
     return () => {
-      console.log('useUserList.useEffect - Cleaning up');
+      // Removed console.log
       isMountedRef.current = false;
       if (currentSearchTimeout) {
         clearTimeout(currentSearchTimeout);
@@ -212,7 +210,7 @@ export function useUserList({
     };
   }, [favorites, pagination, searchUsers, showFavorites]);
   
-  // Devolver los valores necesarios
+  // Return necessary values
   return {
     users: pagination.items,
     loading: pagination.isLoading,

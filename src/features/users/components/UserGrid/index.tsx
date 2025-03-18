@@ -11,22 +11,22 @@ export interface UserGridProps {
 }
 
 /**
- * Componente contenedor para UserGrid
- * Este componente podría manejar lógica adicional en el futuro,
- * como filtrado, clasificación o interacciones específicas.
+ * Container component for UserGrid
+ * This component could handle additional logic in the future,
+ * such as filtering, sorting, or specific interactions.
  */
 const UserGrid = memo((props: UserGridProps) => {
-  // En un futuro, aquí podría haber lógica adicional como:
-  // - Filtrado de usuarios
-  // - Ordenamiento
-  // - Manejo de selección
-  // - Transformación de datos
+  // In the future, there could be additional logic here such as:
+  // - User filtering
+  // - Sorting
+  // - Selection handling
+  // - Data transformation
   
-  // Por ahora, simplemente pasar las props al componente de presentación
+  // For now, simply pass the props to the presentation component
   return <UserGridView {...props} />;
 });
 
-// Agregar nombre de visualización para facilitar la depuración
+// Add display name to facilitate debugging
 UserGrid.displayName = 'UserGrid';
 
 export default UserGrid; 

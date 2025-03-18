@@ -3,32 +3,34 @@ import { MockDataService } from '@/core/services/MockDataService';
 import { User, Repository, GithubSearchResult } from '@/features/users/types';
 
 /**
- * Servicio para interactuar con la API de GitHub
+ * Service for interacting with the GitHub API
  */
 export class GithubService {
   constructor(private apiClient: ApiClient) {}
 
   /**
-   * Obtiene los detalles de un usuario por su nombre de usuario
+   * Gets a user's details by username
+   * @param username - GitHub username to fetch
+   * @returns User data
    */
   async getUser(username: string): Promise<User> {
-    console.log(`GithubService.getUser - Obteniendo usuario: ${username}`);
     try {
       const user = await this.apiClient.get<User>(`/users/${username}`);
-      console.log(`GithubService.getUser - Usuario obtenido: ${user.login}`);
       return user;
     } catch (err) {
-      console.error(`GithubService.getUser - Error obteniendo usuario: ${username}`, err);
       if (process.env.NODE_ENV !== 'production') {
         console.warn(`GitHub API error: ${err instanceof Error ? err.message : String(err)}`);
-        console.log('Falling back to mock data...');
       }
       return MockDataService.getMockUser(username);
     }
   }
 
   /**
-   * Obtiene los repositorios de un usuario
+   * Gets a user's repositories
+   * @param username - GitHub username
+   * @param page - Page number for pagination
+   * @param perPage - Number of items per page
+   * @returns Array of repositories
    */
   async getUserRepos(username: string, page = 1, perPage = 10): Promise<Repository[]> {
     try {
@@ -39,78 +41,70 @@ export class GithubService {
     } catch (err) {
       if (process.env.NODE_ENV !== 'production') {
         console.warn(`GitHub API error: ${err instanceof Error ? err.message : String(err)}`);
-        console.log('Falling back to mock data...');
       }
       return MockDataService.getMockUserRepos(username, page, perPage);
     }
   }
 
   /**
-   * Obtiene una lista paginada de usuarios
+   * Gets a paginated list of users
+   * @param since - User ID to start listing from
+   * @param perPage - Number of users per page
+   * @returns Array of users
    */
   async getUsers(since = 0, perPage = 10): Promise<User[]> {
-    console.log(`GithubService.getUsers - Obteniendo usuarios desde: ${since}, perPage: ${perPage}`);
     try {
       const users = await this.apiClient.get<User[]>(
         '/users',
         { params: { since, per_page: perPage } }
       );
-      console.log(`GithubService.getUsers - Usuarios obtenidos: ${users.length}`);
       return users;
     } catch (err) {
-      console.error('GithubService.getUsers - Error obteniendo usuarios:', err);
       if (process.env.NODE_ENV !== 'production') {
         console.warn(`GitHub API error: ${err instanceof Error ? err.message : String(err)}`);
-        console.log('Falling back to mock data...');
       }
       return MockDataService.getMockUsers(since, perPage);
     }
   }
 
   /**
-   * Busca usuarios en GitHub
+   * Searches for GitHub users
+   * @param query - Search query string
+   * @param page - Page number
+   * @param perPage - Number of results per page
+   * @returns Search results
    */
   async searchUsers(query: string, page = 1, perPage = 10): Promise<GithubSearchResult> {
-    console.log('GithubService.searchUsers - Inicio', { query, page, perPage });
-    
-    // Si la consulta está vacía, obtener usuarios regulares
+    // If the query is empty, get regular users
     if (!query.trim()) {
-      console.log('GithubService.searchUsers - Consulta vacía, obteniendo usuarios regulares');
       try {
-        // Para búsquedas vacías, calculamos el índice de inicio para 
-        // asegurar que cada página tiene usuarios diferentes
-        // El índice se calcula multiplicando el número de página por el tamaño de página
-        // y restando el tamaño de página para obtener el inicio de cada página (0, 10, 20, etc.)
+        // For empty searches, we calculate the starting index
+        // to ensure that each page has different users
+        // The index is calculated by multiplying the page number by the page size
+        // minus the page size to get the start of each page (0, 10, 20, etc.)
         const sincePage = (page * perPage) - perPage;
-        console.log(`GithubService.searchUsers - Calculando índice de inicio: ${sincePage}`);
         
         const users = await this.getUsers(sincePage, perPage);
-        console.log(`GithubService.searchUsers - Usuarios obtenidos: ${users.length}`);
         return {
           items: users,
-          total_count: 1000, // Un número grande para simular el total
+          total_count: 1000, // A large number to simulate the total
           incomplete_results: false
         };
       } catch (err) {
-        console.error('GithubService.searchUsers - Error obteniendo usuarios regulares:', err);
         return MockDataService.getMockSearchResults('', page, perPage);
       }
     }
 
-    // Caso normal: buscar usuarios con la consulta
-    console.log(`GithubService.searchUsers - Buscando usuarios con query: "${query}", página: ${page}`);
+    // Normal case: search users with the query
     try {
-      // Usar la API de búsqueda de GitHub, especificando la página y elementos por página
+      // Use the GitHub search API, specifying page and items per page
       const result = await this.apiClient.get<GithubSearchResult>(
         '/search/users',
         { params: { q: query, page, per_page: perPage } }
       );
-      console.log(`GithubService.searchUsers - Resultados de búsqueda obtenidos: ${result.items.length} de ${result.total_count}`);
       return result;
     } catch (err) {
-      console.error('GithubService.searchUsers - Error buscando usuarios:', err);
-      
-      // Verificar si es un error de límite de tasa
+      // Check if it's a rate limit error
       const isRateLimitError = err instanceof Error && 
         err.message.includes('rate limit');
       
@@ -127,7 +121,11 @@ export class GithubService {
   }
 
   /**
-   * Obtiene los seguidores de un usuario
+   * Gets a user's followers
+   * @param username - GitHub username
+   * @param page - Page number
+   * @param perPage - Number of followers per page
+   * @returns Array of followers
    */
   async getUserFollowers(username: string, page = 1, perPage = 10): Promise<User[]> {
     try {
@@ -136,13 +134,17 @@ export class GithubService {
         { params: { page, per_page: perPage } }
       );
     } catch {
-      // En caso de error, devolver un array vacío
+      // In case of error, return an empty array
       return [];
     }
   }
 
   /**
-   * Obtiene los usuarios que sigue un usuario
+   * Gets users that a specific user follows
+   * @param username - GitHub username
+   * @param page - Page number
+   * @param perPage - Number of following per page
+   * @returns Array of users being followed
    */
   async getUserFollowing(username: string, page = 1, perPage = 10): Promise<User[]> {
     try {
@@ -151,7 +153,7 @@ export class GithubService {
         { params: { page, per_page: perPage } }
       );
     } catch {
-      // En caso de error, devolver un array vacío
+      // In case of error, return an empty array
       return [];
     }
   }

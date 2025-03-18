@@ -6,7 +6,7 @@ import UserGrid from '@/features/users/components/UserGrid';
 import styles from '@/styles/Home.module.css';
 import { useEffect, useState } from 'react';
 
-// Componente de presentación
+// Presentation component
 interface FavoritesViewProps {
   users: User[];
   loading: boolean;
@@ -23,16 +23,16 @@ const FavoritesView = ({
   return (
     <>
       <Head>
-        <title>Favoritos | GitHub Explorer</title>
-        <meta name="description" content="¡Explora usuarios y haz clic en el icono de corazón para agregarlos a tus favoritos!" />
+        <title>Favorites | GitHub Explorer</title>
+        <meta name="description" content="Explore users and click the heart icon to add them to your favorites!" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       
       <div className={styles.container}>
         <header className={styles.header}>
-          <h1 className={styles.title}>Mis favoritos</h1>
-          <SearchBar onSearch={onSearch} placeholder="Buscar en favoritos..." />
+          <h1 className={styles.title}>My favorites</h1>
+          <SearchBar onSearch={onSearch} placeholder="Search in favorites..." />
         </header>
 
         <UserGrid 
@@ -46,7 +46,7 @@ const FavoritesView = ({
   );
 };
 
-// Componente contenedor principal
+// Main container component
 export default function FavoritesPage() {
   const { favorites, isLoading: isFavoritesLoading, isInitialized } = useFavorites();
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
@@ -84,7 +84,6 @@ export default function FavoritesPage() {
   }, [favorites, searchQuery, isInitialized]);
   
   const handleSearch = (query: string) => {
-    console.log('FavoritesPage - Searching favorites:', query);
     setSearchQuery(query);
   };
 
@@ -92,13 +91,13 @@ export default function FavoritesPage() {
     return (
       <div className={styles.container}>
         <div className={styles.loadingState}>
-          <p>Cargando favoritos...</p>
+          <p>Loading favorites...</p>
         </div>
       </div>
     );
   }
 
-  // Pasar props al componente de presentación
+  // Pass props to the presentation component
   return (
     <FavoritesView
       users={filteredUsers}

@@ -1,11 +1,11 @@
 /**
- * Hook para manejar estado global compartido entre instancias
- * Este tipo de patrón es útil cuando necesitamos compartir estado
- * entre diferentes hooks y componentes sin usar un estado global
- * completo como Redux o Context.
+ * Hook for managing global state shared between instances.
+ * This pattern is useful when we need to share state
+ * between different hooks and components without using
+ * a full global state solution like Redux or Context.
  */
 
-// Valores por defecto para las variables globales
+// Default values for global variables
 const globalState = {
   lastErrorTimestamp: { value: 0 },
   isNetworkErrorActive: { value: false },
@@ -13,22 +13,23 @@ const globalState = {
 };
 
 /**
- * Hook que proporciona acceso a un estado global simple para tracking
- * de errores y estado de la red.
+ * Hook that provides access to a simple global state for tracking
+ * errors and network status.
  * 
- * Al no usar useState, estos valores persisten entre renderizados
- * y son compartidos entre todos los componentes
+ * By not using useState, these values persist between renders
+ * and are shared between all components
  */
 export function useGlobalState() {
   /**
-   * Registra un error de red y establece un cooldown global
+   * Registers a network error and sets a global cooldown
+   * @param cooldownMs - Duration of the cooldown period in milliseconds
    */
   const setNetworkError = (cooldownMs = 5000) => {
     globalState.lastErrorTimestamp.value = Date.now();
     globalState.isNetworkErrorActive.value = true;
     globalState.globalCooldownUntil.value = Date.now() + cooldownMs;
     
-    // Establecer un timeout para limpiar el estado de error después del cooldown
+    // Set a timeout to clear the error state after the cooldown
     setTimeout(() => {
       if (Date.now() >= globalState.globalCooldownUntil.value) {
         globalState.isNetworkErrorActive.value = false;
@@ -37,14 +38,15 @@ export function useGlobalState() {
   };
   
   /**
-   * Comprueba si estamos en un período de cooldown global por error de red
+   * Checks if we are in a global cooldown period due to a network error
+   * @returns {boolean} True if in global cooldown
    */
   const isInGlobalCooldown = () => {
     return Date.now() < globalState.globalCooldownUntil.value;
   };
   
   /**
-   * Limpia manualmente el estado de error
+   * Manually clears the error state
    */
   const clearNetworkError = () => {
     globalState.isNetworkErrorActive.value = false;
@@ -52,7 +54,8 @@ export function useGlobalState() {
   };
   
   /**
-   * Devuelve el estado actual del sistema respecto a errores de red
+   * Returns the current system state regarding network errors
+   * @returns Current network error state object
    */
   const getNetworkErrorState = () => {
     return {
