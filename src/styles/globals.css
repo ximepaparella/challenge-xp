@@ -86,7 +86,7 @@ body {
 }
 
 a {
-  color: var(--color-brand-primary);
+  color: var(--foreground);
   text-decoration: none;
   transition: var(--transition-fast);
 }

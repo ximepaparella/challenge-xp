@@ -24,7 +24,7 @@
   left: 0;
   width: 80px;
   height: 2px;
-  background: var(--color-brand-primary);
+  background: var(--foreground);
 }
 
 .repoGrid {
