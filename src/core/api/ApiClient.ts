@@ -114,8 +114,6 @@ export class ApiClient {
       });
     }
     
-    // Register the configured headers (without sensitive values)
-    const headerKeys = Array.from(headers.keys());
     
     return headers;
   }
