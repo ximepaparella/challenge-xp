@@ -124,7 +124,6 @@ describe('useGlobalState', () => {
 
   it('should maintain cooldown when error is set multiple times', () => {
     const { result } = renderHook(() => useGlobalState());
-    const now = Date.now();
     const cooldownMs = 5000;
 
     act(() => {

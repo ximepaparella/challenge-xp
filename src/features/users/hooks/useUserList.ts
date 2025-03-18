@@ -186,6 +186,9 @@ export function useUserList({
   
   // Manejar la carga inicial
   useEffect(() => {
+    isMountedRef.current = true;
+    const currentSearchTimeout = searchTimeoutRef.current;
+
     // Only do initial load on first mount and if not showing favorites
     if (isFirstMountRef.current) {
       isFirstMountRef.current = false;
@@ -199,17 +202,15 @@ export function useUserList({
         pagination.reset(favorites, favorites.length);
       }
     }
-    
-    // Cleanup on unmount
+
     return () => {
       console.log('useUserList.useEffect - Cleaning up');
       isMountedRef.current = false;
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
+      if (currentSearchTimeout) {
+        clearTimeout(currentSearchTimeout);
       }
-      retryStrategy.cleanup();
     };
-  }, [favorites, pagination, retryStrategy, searchUsers, showFavorites, searchTimeoutRef]);
+  }, [favorites, pagination, searchUsers, showFavorites]);
   
   // Devolver los valores necesarios
   return {

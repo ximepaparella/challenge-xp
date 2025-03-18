@@ -54,7 +54,7 @@ describe('useApiClientInstance', () => {
     // Set token in localStorage
     localStorage.setItem('github_token', 'test-token');
 
-    const { result } = renderHook(() => useApiClientInstance());
+    renderHook(() => useApiClientInstance());
     
     // Get the tokenProvider function from the ApiClient constructor call
     const tokenProvider = (ApiClient as jest.Mock).mock.calls[0][0].tokenProvider;
@@ -67,7 +67,7 @@ describe('useApiClientInstance', () => {
     // Set environment variable
     process.env = { ...originalEnv, NEXT_PUBLIC_GITHUB_TOKEN: 'env-token' };
 
-    const { result } = renderHook(() => useApiClientInstance());
+    renderHook(() => useApiClientInstance());
     
     // Get the tokenProvider function from the ApiClient constructor call
     const tokenProvider = (ApiClient as jest.Mock).mock.calls[0][0].tokenProvider;
@@ -77,7 +77,7 @@ describe('useApiClientInstance', () => {
   });
 
   it('should return null if no token is available', () => {
-    const { result } = renderHook(() => useApiClientInstance());
+    renderHook(() => useApiClientInstance());
     
     // Get the tokenProvider function from the ApiClient constructor call
     const tokenProvider = (ApiClient as jest.Mock).mock.calls[0][0].tokenProvider;
@@ -90,7 +90,7 @@ describe('useApiClientInstance', () => {
     // Mock development environment
     process.env = { ...originalEnv, NODE_ENV: 'development' };
 
-    const { result } = renderHook(() => useApiClientInstance());
+    renderHook(() => useApiClientInstance());
     
     // Get the onError function from the ApiClient constructor call
     const onError = (ApiClient as jest.Mock).mock.calls[0][0].onError;
@@ -107,7 +107,7 @@ describe('useApiClientInstance', () => {
     // Mock production environment
     process.env = { ...originalEnv, NODE_ENV: 'production' };
 
-    const { result } = renderHook(() => useApiClientInstance());
+    renderHook(() => useApiClientInstance());
     
     // Get the onError function from the ApiClient constructor call
     const onError = (ApiClient as jest.Mock).mock.calls[0][0].onError;

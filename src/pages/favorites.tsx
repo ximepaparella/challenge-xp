@@ -35,13 +35,6 @@ const FavoritesView = ({
           <SearchBar onSearch={onSearch} placeholder="Buscar en favoritos..." />
         </header>
 
-        {users.length === 0 && !loading && !error && (
-          <div className={styles.emptyState}>
-            <p>No tienes favoritos aún.</p>
-            <p>Explora usuarios y haz clic en el icono de corazón para agregarlos a tus favoritos.</p>
-          </div>
-        )}
-
         <UserGrid 
           users={users} 
           loading={loading}

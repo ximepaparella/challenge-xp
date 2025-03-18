@@ -59,7 +59,7 @@ describe('FavoritesContext', () => {
       getUsers: jest.fn().mockResolvedValue([mockUser]),
       getUserFollowers: jest.fn().mockResolvedValue([]),
       getUserFollowing: jest.fn().mockResolvedValue([]),
-      apiClient: {} as any
+      apiClient: {} as { get: (url: string) => Promise<unknown> }
     } as unknown as GithubService;
 
     // Mock the constructor

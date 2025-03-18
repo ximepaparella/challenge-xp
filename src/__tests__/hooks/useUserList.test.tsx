@@ -39,7 +39,6 @@ interface PaginationOptions {
 
 interface FetchResult {
   items: User[];
-  total: number;
 }
 
 jest.mock('../../core/hooks/usePagination', () => ({
@@ -63,7 +62,7 @@ jest.mock('../../core/hooks/usePagination', () => ({
       }
     };
 
-    const reset = (newItems: User[], total: number) => {
+    const reset = (newItems: User[]) => {
       setItems(newItems);
     };
 
@@ -111,7 +110,7 @@ describe('useUserList', () => {
       getUsers: jest.fn().mockResolvedValue(mockUsers),
       getUserFollowers: jest.fn().mockResolvedValue([]),
       getUserFollowing: jest.fn().mockResolvedValue([]),
-      apiClient: {} as any
+      apiClient: {} as { get: (url: string) => Promise<unknown> }
     } as unknown as GithubService;
 
     // Mock the hook
