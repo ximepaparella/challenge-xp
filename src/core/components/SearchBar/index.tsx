@@ -30,7 +30,6 @@ const SearchBar = (props: SearchBarProps) => {
     e.preventDefault();
     // Solo buscar si el término ha cambiado
     if (searchTerm !== lastSearchedTermRef.current) {
-      console.log('SearchBar - Búsqueda manual:', searchTerm);
       lastSearchedTermRef.current = searchTerm;
       onSearch(searchTerm); // Immediately search without waiting for debounce
     }
@@ -46,7 +45,6 @@ const SearchBar = (props: SearchBarProps) => {
     
     // Solo buscar si el término ha cambiado después del debounce y tiene contenido
     if (debouncedSearchTerm !== lastSearchedTermRef.current) {
-      console.log('SearchBar - Búsqueda por debounce:', debouncedSearchTerm);
       lastSearchedTermRef.current = debouncedSearchTerm;
       onSearch(debouncedSearchTerm);
     }

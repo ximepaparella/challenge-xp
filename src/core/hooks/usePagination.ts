@@ -45,7 +45,6 @@ export function usePagination<T>({
    * Reestablece la paginación con un nuevo conjunto de elementos
    */
   const reset = useCallback((newItems: T[], newTotal?: number) => {
-    console.log(`usePagination.reset - Reiniciando con ${newItems.length} elementos${newTotal ? `, total: ${newTotal}` : ''}`);
     setItems(newItems);
     setCurrentPage(initialPage);
     setError(null);
