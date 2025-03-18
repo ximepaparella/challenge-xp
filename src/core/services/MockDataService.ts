@@ -1,12 +1,14 @@
 import { User, Repository, GithubSearchResult } from '@/features/users/types';
 
 /**
- * Servicio para proporcionar datos simulados cuando se producen errores
- * o cuando se necesitan datos de prueba para desarrollo.
+ * Service for providing simulated data when errors occur
+ * or when test data is needed for development.
  */
 export class MockDataService {
   /**
-   * Genera un usuario simulado con datos aleatorios
+   * Generates a simulated user with random data
+   * @param id - User ID to generate
+   * @returns Mock user object
    */
   private static generateMockUser(id: number): User {
     const login = `user_${id}`;
@@ -32,7 +34,10 @@ export class MockDataService {
   }
 
   /**
-   * Genera un repositorio simulado con datos aleatorios
+   * Generates a simulated repository with random data
+   * @param id - Repository ID
+   * @param owner - Repository owner username
+   * @returns Mock repository object
    */
   private static generateMockRepo(id: number, owner: string): Repository {
     const name = `repo_${id}`;
@@ -54,16 +59,22 @@ export class MockDataService {
   }
 
   /**
-   * Devuelve un usuario simulado por nombre de usuario
+   * Returns a simulated user by username
+   * @param username - GitHub username to simulate
+   * @returns Mock user object
    */
   static getMockUser(username: string): User {
-    // Crear un número basado en el username para tener respuestas consistentes
+    // Create a number based on the username to have consistent responses
     const idBase = username.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return this.generateMockUser(idBase);
   }
 
   /**
-   * Devuelve una lista simulada de repositorios para un usuario
+   * Returns a simulated list of repositories for a user
+   * @param username - GitHub username
+   * @param page - Page number
+   * @param perPage - Repositories per page
+   * @returns Array of mock repositories
    */
   static getMockUserRepos(username: string, page = 1, perPage = 10): Repository[] {
     const repos = [];
@@ -77,38 +88,42 @@ export class MockDataService {
   }
 
   /**
-   * Devuelve un resultado de búsqueda simulado
+   * Returns a simulated search result
+   * @param query - Search query
+   * @param page - Page number
+   * @param perPage - Results per page
+   * @returns Mock search results
    */
   static getMockSearchResults(query: string, page = 1, perPage = 10): GithubSearchResult {
-    // Si no hay query, devolvemos una lista de usuarios aleatorios
+    // If there's no query, return a list of random users
     if (!query.trim()) {
       const users = [];
-      const startId = (page - 1) * perPage * 1000; // Utilizar un multiplicador grande para evitar colisiones
+      const startId = (page - 1) * perPage * 1000; // Use a large multiplier to avoid collisions
       
       for (let i = 0; i < perPage; i++) {
         users.push(this.generateMockUser(startId + i + 1));
       }
       
       return {
-        total_count: 1000, // Simulamos que hay muchos resultados
+        total_count: 1000, // Simulate that there are many results
         incomplete_results: false,
         items: users
       };
     }
     
-    // Si hay query, generamos usuarios que coincidan con el patrón
+    // If there's a query, generate users that match the pattern
     const totalResults = Math.min(100, Math.floor(Math.random() * 200));
     const availableResults = Math.max(0, totalResults - (page - 1) * perPage);
     const resultsToReturn = Math.min(perPage, availableResults);
     
     const users = [];
-    // Usar un hash básico para la consulta para obtener IDs consistentes basados en la consulta
+    // Use a basic hash for the query to get consistent IDs based on the query
     const queryHash = query.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const startId = queryHash * 10000 + (page - 1) * perPage * 1000; // Asegurar IDs únicos entre páginas
+    const startId = queryHash * 10000 + (page - 1) * perPage * 1000; // Ensure unique IDs between pages
     
     for (let i = 0; i < resultsToReturn; i++) {
       const user = this.generateMockUser(startId + i + 1);
-      // Modificar el login para que coincida parcialmente con la query
+      // Modify the login to partially match the query
       user.login = `${query}_user_${i + 1}`;
       users.push(user);
     }
@@ -121,11 +136,14 @@ export class MockDataService {
   }
 
   /**
-   * Devuelve una lista simulada de usuarios (paginada)
+   * Returns a simulated list of users (paginated)
+   * @param since - User ID to start listing from
+   * @param perPage - Users per page
+   * @returns Array of mock users
    */
   static getMockUsers(since = 0, perPage = 10): User[] {
     const users = [];
-    const startId = since * 1000; // Usar un multiplicador grande para evitar colisiones
+    const startId = since * 1000; // Use a large multiplier to avoid collisions
     
     for (let i = 0; i < perPage; i++) {
       users.push(this.generateMockUser(startId + i + 1));

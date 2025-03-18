@@ -1,172 +1,147 @@
 # GitHub Explorer
 
-Aplicación web que permite explorar perfiles de usuarios de GitHub, desarrollada con Next.js y TypeScript.
+A web application that allows you to explore GitHub user profiles, built with Next.js and TypeScript.
 
-## Características
+## Features
 
-- **Exploración de Usuarios:** Interfaz intuitiva para descubrir perfiles de GitHub.
-- **Búsqueda en Tiempo Real:** Sistema de búsqueda optimizado con debounce.
-- **Gestión de Favoritos:** Guarda tus perfiles favoritos para acceso rápido.
-- **Perfiles Detallados:** Visualiza información completa de cada usuario y sus repositorios.
-- **Modo Offline:** Sistema de mockups para continuar trabajando sin conexión o cuando se exceden los límites de la API.
-- **Componentes Reutilizables:** Arquitectura basada en componentes modulares y extensibles.
-- **Diseño Responsivo:** Experiencia óptima en dispositivos móviles y escritorio.
+- **User Exploration:** Intuitive interface for discovering GitHub profiles.
+- **Real-time Search:** Optimized search system with debounce implementation.
+- **Favorites Management:** Save your favorite profiles for quick access.
+- **Detailed Profiles:** View complete information about each user and their repositories.
+- **Offline Mode:** Mockup system to continue working without connection or when API limits are exceeded.
+- **Reusable Components:** Architecture based on modular and extensible components.
+- **Responsive Design:** Optimal experience on both mobile and desktop devices.
+- **Comprehensive Testing:** Complete test coverage with Jest and React Testing Library.
 
-## Tecnologías Utilizadas
+## Technologies Used
 
-- **Frontend:** Next.js con TypeScript
-- **Estilizado:** CSS Modules con variables CSS
-- **Estado:** Context API para gestión de favoritos
-- **API:** Integración con GitHub API
-- **Testing:** Jest y React Testing Library
+- **Frontend:** Next.js with TypeScript
+- **Styling:** CSS Modules with CSS variables
+- **State Management:** Context API for favorites management
+- **API:** GitHub API integration
+- **Testing:** Jest and React Testing Library
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 /src
-  /core            # Componentes y utilidades del núcleo
-    /components    # Componentes reutilizables UI
-    /utils         # Utilidades y helpers
-  /features        # Funcionalidades organizadas por dominio
-    /users         # Todo lo relacionado con usuarios
-      /components  # Componentes específicos de usuarios
-      /hooks       # Hooks personalizados
-      /services    # Servicios de API
-      /types       # Tipado TypeScript
-  /context         # Contextos globales React
-  /mockups         # Datos mock para desarrollo sin API
-  /pages           # Páginas Next.js
-  /styles          # Estilos globales
+  /core            # Core components and utilities
+    /api           # API client and related services
+    /components    # Reusable UI components
+    /hooks         # Custom hooks for common functionality
+    /utils         # Utilities and helpers
+  /features        # Features organized by domain
+    /users         # Everything related to users
+      /components  # User-specific components
+      /hooks       # Custom hooks
+      /services    # API services
+      /types       # TypeScript types
+    /favorites     # Favorites-related functionality
+      /context     # Favorites Context API implementation
+  /pages           # Next.js pages
+  /styles          # Global styles
+  /__tests__       # Test files
 ```
 
-## Componentes Reutilizables
+## Reusable Components
 
-El proyecto incluye varios componentes UI reutilizables:
+The project includes several reusable UI components:
 
-- **Avatar:** Componentes para mostrar avatares de usuario con múltiples tamaños.
-- **Stats:** Visualización de estadísticas con varias variantes (default, card, inline, small).
-- **UserCard:** Tarjeta de usuario con información relevante.
-- **UserProfile:** Visualización completa del perfil de usuario.
+- **Avatar:** Components to display user avatars with multiple sizes.
+- **Stats:** Statistics visualization with various variants (default, card, inline, small).
+- **UserCard:** User card with relevant information.
+- **UserProfile:** Complete user profile visualization.
+- **SearchBar:** Reusable search component with debounce functionality.
+- **EmptyState:** Component for showing empty state messages.
 
-## Sistema de Mockups
+## Advanced Features
 
-La aplicación incluye un sistema robusto de datos mock que permite:
+### Caching System
 
-- Trabajar sin depender de la API de GitHub durante el desarrollo.
-- Continuar usando la aplicación cuando se exceden los límites de la API.
-- Generar perfiles dinámicos para cualquier nombre de usuario solicitado.
+The application implements a robust caching system that:
+- Reduces unnecessary API calls
+- Improves performance by storing frequently accessed data
+- Handles cache invalidation based on time and capacity
 
-Los mockups están estructurados en:
-- Perfiles de usuario predefinidos
-- Repositorios para cada usuario
-- Generación dinámica de datos para usuarios no predefinidos
+### Request Deduplication
 
-## Instalación y Ejecución
+The deduplication system prevents redundant API calls by:
+- Tracking in-flight requests
+- Sharing responses for identical requests
+- Implementing cooldown periods for failed requests
 
-1. Clonar el repositorio:
+### Error Handling
+
+Comprehensive error handling with:
+- Retry strategy for failed API calls
+- Graceful fallback to mock data
+- User-friendly error states
+
+### Mock Data System
+
+The application includes a robust mock data system that allows:
+- Working without depending on the GitHub API during development
+- Continuing to use the application when API limits are exceeded
+- Generating dynamic profiles for any requested username
+
+## Installation and Execution
+
+1. Clone the repository:
    ```
-   git clone https://github.com/tu-usuario/github-explorer.git
+   git clone https://github.com/your-username/github-explorer.git
    cd github-explorer
    ```
 
-2. Instalar dependencias:
+2. Install dependencies:
    ```
    npm install
    ```
 
-3. (Opcional) Configurar variables de entorno:
-   Crea un archivo `.env.local` y añade tu token de GitHub para aumentar los límites de API:
+3. (Optional) Configure environment variables:
+   Create a `.env.local` file and add your GitHub token to increase API limits:
    ```
-   NEXT_PUBLIC_GITHUB_TOKEN=tu_token_aquí
+   NEXT_PUBLIC_GITHUB_TOKEN=your_token_here
    ```
 
-4. Ejecutar en modo desarrollo:
+4. Run in development mode:
    ```
    npm run dev
    ```
 
-5. Abrir [http://localhost:3000](http://localhost:3000) en el navegador.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Scripts Disponibles
+## Available Scripts
 
-- `npm run dev` - Servidor de desarrollo
-- `npm run build` - Construye la aplicación
-- `npm run start` - Inicia en modo producción
-- `npm run lint` - Ejecuta el linter
-- `npm run test` - Ejecuta tests unitarios
+- `npm run dev` - Development server
+- `npm run build` - Build the application
+- `npm run start` - Start in production mode
+- `npm run lint` - Run the linter
+- `npm run test` - Run unit tests
+- `npm run test -- --coverage` - Run tests with coverage reporting
 
-## Optimizaciones
+## Testing
 
-- Componentes memoizados para evitar renders innecesarios
-- Debounce en búsquedas para reducir llamadas a la API
-- Lazy loading de imágenes con Next/Image
-- Server-Side Rendering en páginas de detalle
-- Sistema de caché para respuestas de API
+The project implements comprehensive testing with:
+- Unit tests for all components and hooks
+- Integration tests for context providers
+- Mocking of external dependencies
+- >95% code coverage
 
-## Capturas de Pantalla
+## Optimizations
 
-- Página principal con búsqueda y listado de usuarios
-- Página de perfil detallado
-- Sección de favoritos
-- Vista responsiva móvil
+- Memoized components to avoid unnecessary renders
+- Debounced searches to reduce API calls
+- Lazy loading of images with Next/Image
+- Server-Side Rendering on detail pages
+- Caching system for API responses
+- Request deduplication to prevent duplicate calls
 
-## Consideraciones Técnicas
+## Technical Considerations
 
-- Implementación de manejo de errores y estados de carga
-- Estrategia de fallback a datos mock cuando la API falla
-- Estructura escalable para facilitar la expansión de funcionalidades
-
-## Contribuir
-
-Las contribuciones son bienvenidas. Por favor, abre un issue para discutir los cambios propuestos o envía un PR directamente.
-
-## Refactorización Pendiente
-
-Durante la revisión del código se identificaron las siguientes oportunidades de mejora:
-
-### Archivos Duplicados o Redundantes
-
-1. **Servicios de GitHub duplicados**:
-   - ✅ Se ha consolidado la funcionalidad en `src/features/users/api/github.service.ts`
-   - ✅ Se eliminó el archivo proxy de compatibilidad redundante
-   - ✅ Se han actualizado las importaciones en componentes clave para usar directamente `GithubService`
-
-2. **Hooks con funcionalidades superpuestas**:
-   - ✅ Se ha eliminado completamente `useGithubSearch.ts` ya que no se utilizaba
-   - ✅ Se ha eliminado completamente `useGithubUser.ts` ya que no se utilizaba y su funcionalidad puede ser manejada por `useUserList`
-   - ✅ Se ha actualizado el archivo de índice de hooks para reflejar estos cambios
-
-3. **Reexportaciones innecesarias**:
-   - ✅ La reexportación de `useDebounce` en `src/features/users/hooks/index.ts` fue eliminada ya que creaba una redirección innecesaria
-   - ✅ Se corrigieron problemas de reexportación en los componentes, usando las rutas correctas
-
-### Mejoras Implementadas
-
-1. **Eliminación de console.logs**:
-   - ✅ Se han eliminado las declaraciones de console.log/error del código para producción
-
-2. **Corrección de reexportaciones innecesarias**:
-   - ✅ Se eliminaron reexportaciones redundantes en archivos de índice
-   - ✅ Se agregó la exportación de `EmptyState` en el índice de componentes core
-   - ✅ Se creó una estructura de exportación correcta para componentes de repositorios
-   - ✅ Se actualizaron las importaciones en el índice de componentes de usuarios
-
-3. **Consolidación de servicios y hooks**:
-   - ✅ Se unificó toda la funcionalidad en `GithubService`
-   - ✅ Se eliminaron hooks redundantes no utilizados (`useGithubSearch`, `useGithubUser`)
-   - ✅ Se eliminó el archivo proxy de compatibilidad redundante
-
-### Beneficios de la Refactorización
-
-Estas mejoras han ayudado a:
-
-1. **Reducir la complejidad del código**: Al eliminar archivos y funcionalidades duplicadas
-2. **Mejorar la mantenibilidad**: Facilitando la comprensión de la estructura del proyecto
-3. **Aumentar la coherencia**: Asegurando que los componentes y servicios se utilicen de manera consistente
-4. **Optimizar el tamaño del bundle**: Al eliminar código no utilizado
-
-La aplicación ahora tiene una estructura más clara, con límites bien definidos entre sus diferentes módulos.
+- Implementation of error handling and loading states
+- Fallback strategy to mock data when the API fails
+- Scalable structure to facilitate functionality expansion
 
 ---
 
-Desarrollado como parte de un desafío técnico.
+Developed as part of a technical challenge.

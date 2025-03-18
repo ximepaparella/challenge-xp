@@ -1,6 +1,6 @@
 /**
- * Archivo de barril (barrel file) para servicios relacionados con usuarios
- * Facilita la importación de múltiples servicios en un solo statement
+ * Barrel file for user-related services
+ * Makes it easier to import multiple services with a single statement
  */
 
 export * from './GithubService'; 

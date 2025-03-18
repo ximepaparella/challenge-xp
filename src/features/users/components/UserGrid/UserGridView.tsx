@@ -12,20 +12,18 @@ export interface UserGridViewProps {
 }
 
 /**
- * Componente de presentación pura para mostrar una cuadrícula de usuarios.
- * Este componente se encarga sólo del renderizado y no contiene lógica de negocio.
+ * Pure presentation component to display a grid of users.
+ * This component is only responsible for rendering and contains no business logic.
  */
 const UserGridView = memo(({ users, loading, error, hasMore = false, onLoadMore }: UserGridViewProps) => {
-  // Función para manejar el click en "Cargar más"
+  // Function to handle the "Load more" click
   const handleLoadMore = useCallback(() => {
-    console.log('UserGridView - Click en "Cargar más"', { hasMore, loading, usersCount: users.length });
     if (onLoadMore && hasMore && !loading) {
-      console.log('UserGridView - Ejecutando onLoadMore');
       onLoadMore();
     }
   }, [hasMore, loading, onLoadMore, users.length]);
   
-  // Si tenemos un error
+  // If we have an error
   if (error) {
     return (
       <div className={styles.empty} role="alert">
@@ -41,17 +39,17 @@ const UserGridView = memo(({ users, loading, error, hasMore = false, onLoadMore 
     );
   }
   
-  // Si estamos cargando inicialmente y no hay usuarios
+  // If we're initially loading and there are no users
   if (loading && users.length === 0) {
     return (
       <div className={styles.loading} role="status" aria-live="polite">
         <div className={styles.spinner} aria-hidden="true"></div>
-        <p>Cargando usuarios...</p>
+        <p>Loading users...</p>
       </div>
     );
   }
 
-  // Si no hay usuarios para mostrar
+  // If there are no users to display
   if (users.length === 0) {
     return (
       <div className={styles.empty} role="status" aria-live="polite">
@@ -62,7 +60,7 @@ const UserGridView = memo(({ users, loading, error, hasMore = false, onLoadMore 
             <line x1="9" y1="9" x2="9.01" y2="9"></line>
             <line x1="15" y1="9" x2="15.01" y2="9"></line>
           </svg>
-          <p>No se encontraron usuarios. Intenta con otra búsqueda.</p>
+          <p>No users found. Try another search.</p>
         </div>
       </div>
     );
@@ -70,7 +68,7 @@ const UserGridView = memo(({ users, loading, error, hasMore = false, onLoadMore 
 
   return (
     <div className={styles.userGridContainer}>
-      <ul className={styles.grid} aria-label="Lista de usuarios de GitHub">
+      <ul className={styles.grid} aria-label="List of GitHub users">
         {users.map((user: User) => (
           <li key={user.id} className={styles.gridItem}>
             <UserCard user={user} />
@@ -78,12 +76,12 @@ const UserGridView = memo(({ users, loading, error, hasMore = false, onLoadMore 
         ))}
       </ul>
       
-      {/* Indicador de carga o botón de cargar más */}
+      {/* Loading indicator or load more button */}
       <div className={styles.loadMore}>
         {loading ? (
           <>
             <div className={styles.spinner} aria-hidden="true"></div>
-            <p>Cargando más usuarios...</p>
+            <p>Loading more users...</p>
           </>
         ) : hasMore ? (
           <button 
@@ -91,7 +89,7 @@ const UserGridView = memo(({ users, loading, error, hasMore = false, onLoadMore 
             onClick={handleLoadMore}
             disabled={loading}
           >
-            Cargar más
+            Load more
           </button>
         ) : null}
       </div>
@@ -99,7 +97,7 @@ const UserGridView = memo(({ users, loading, error, hasMore = false, onLoadMore 
   );
 });
 
-// Agregar nombre de visualización para facilitar la depuración
+// Add display name to facilitate debugging
 UserGridView.displayName = 'UserGridView';
 
 export default UserGridView; 

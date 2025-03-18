@@ -7,17 +7,17 @@ export interface UserCardProps {
 }
 
 /**
- * Componente contenedor para UserCard
- * Este componente podría manejar lógica adicional en el futuro,
- * como interacciones específicas del usuario o carga de datos adicionales.
+ * Container component for UserCard
+ * This component could handle additional logic in the future,
+ * such as specific user interactions or loading additional data.
  */
 const UserCard = (props: UserCardProps) => {
-  // En un futuro, aquí podría haber lógica adicional como:
-  // - Carga de datos adicionales del usuario
-  // - Gestión de estados específicos (seleccionado, destacado)
-  // - Tracking de interacciones
+  // In the future, there could be additional logic here such as:
+  // - Loading additional user data
+  // - Managing specific states (selected, highlighted)
+  // - Tracking interactions
   
-  // Por ahora, simplemente pasar las props al componente de presentación
+  // For now, simply pass the props to the presentation component
   return <UserCardView {...props} />;
 };
 
